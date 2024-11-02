@@ -1,0 +1,46 @@
+﻿@using Frontend.Presentation.Pages.Auth
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+
+<RadzenNotification />
+<div class="MainBody">
+
+    @if (!RedirectToSignIn)
+    {
+        <LoginPage />
+    }
+    else
+    {
+        <SignUpPage />
+    }
+
+</div>
+
+@code{
+    public bool RedirectToSignIn { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LocationChanged(null,null);
+        Navigation.LocationChanged += LocationChanged;
+        await Task.CompletedTask;
+    }
+
+    void LocationChanged(object? sender, LocationChangedEventArgs? e)
+    {       
+        if (Navigation.Uri.Contains("/signup"))
+        {
+            RedirectToSignIn = true;
+        }
+        else
+        {
+            RedirectToSignIn = false;
+        }
+
+        StateHasChanged();
+    }   
+}
+
+@code {
+
+}

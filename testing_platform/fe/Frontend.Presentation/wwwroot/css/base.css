@@ -1,0 +1,131 @@
+﻿.login-wrapper {
+    width: 512px;
+    height: 100vh;
+    background-color: transparent !important;
+    border: none;
+    position: fixed;
+    left: 17%;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.route-text {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.selected-login-way {
+    color: #d6d6d6;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 31px;
+    letter-spacing: 0;
+    cursor: pointer;
+    border-bottom: 2px solid dodgerblue;
+    font-family: Poppins, sans-serif;
+}
+
+.unselected-login-way {
+    color: #d6d6d6;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 31px;
+    letter-spacing: 0;
+    cursor: pointer;
+    opacity: 30%;
+    font-family: Poppins, sans-serif;
+}
+
+.login-input-wrapper {
+    width: 100%;
+    height: fit-content;
+    background-color: transparent;
+    border: none !important;
+    padding: 5px 0;
+    padding: 0 36px;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login-input-text {
+    color: #74777A;
+    line-height: 8px;
+    font-size: .9rem;
+    font-family: Poppins, sans-serif;
+}
+
+.login-input {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px !important;
+    line-height: 22px !important;
+    height: 50px !important;
+    border: 1px solid !important;
+    border-radius: 3px;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+}
+
+.login-input-item {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: unset
+}
+
+.remember-me-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: .9rem;
+    font-family: Poppins, sans-serif;
+    padding: unset
+}
+
+.login-button {
+    position: relative;
+    height: 40px !important;
+    background-color: #2481e0 !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+    font-size: 15px !important;
+    line-height: 18px !important;
+    width: 100% !important;
+    border: none !important;
+    border-radius: 3px !important;
+    font-family: Poppins, sans-serif !important;
+    margin-top: 20px !important;
+}
+
+.log-into-text {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    line-height: 58px !important;
+    color: #000 !important;
+    text-align: center !important;
+    font-family: Poppins, sans-serif !important;
+}
+
+.login-card {
+    width: 100%;
+}
+
+.rz-card.rz-variant-filled {
+    box-shadow: unset !important;
+}
+
+.rz-form-field-content {
+    height: 50px;
+}

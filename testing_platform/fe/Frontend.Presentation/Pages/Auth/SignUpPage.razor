@@ -1,0 +1,92 @@
+﻿@page "/signup"
+@using Contracts.Internal
+@using Frontend.Presentation.Services
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+@inject NotificationService NotificationService
+
+<RadzenImage Path="./assets/images/login_background.jpg" Style="width:100%;height:100%;z-index:1;position:absolute;top:0;left:0;" />
+
+<RadzenCard class="login-wrapper">
+
+    <RadzenTemplateForm TItem="SignupModel" Data=@_signupModel class="login-card" Submit="OnSubmit">
+        <RadzenCard class="login-input-wrapper" Style="gap:20px;display: flex;justify-content: center;align-items:center">
+            <RadzenText class="log-into-text">Create new account</RadzenText>
+
+            <RadzenStack Style="gap:5px;width:90%">
+                <RadzenText Text="UserName*"></RadzenText>
+                <RadzenTextBox @bind-Value="_signupModel.UserName" Name="UserName"/>
+                <RadzenRequiredValidator Component="UserName" Text="User name is required"/>
+            </RadzenStack>
+
+            <RadzenStack Style="gap:5px;width:90%">
+                <RadzenText Text="Email*"></RadzenText>
+                <RadzenTextBox @bind-Value="_signupModel.Email" Name="Email"/>
+                <RadzenRequiredValidator Component="Email" Text="Email is required"/>
+            </RadzenStack>
+
+            <RadzenStack Style="gap:5px;width:90%">
+                <RadzenText Text="Password*"></RadzenText>
+                <RadzenTextBox @bind-Value="_signupModel.Password" Name="Password"/>
+                <RadzenRequiredValidator Component="Password" Text="Password is required"/>
+                <RadzenRegexValidator Component="Password" Text="Password is not valid" 
+                                      Pattern="^(?=.*[0-9])(?=.*[A-Z])(?=.*[!#$%^:\\|,.<>\\/?]).{8,}$" />
+            </RadzenStack>
+            
+            <RadzenStack Style="gap:5px;width:90%">
+                <RadzenText Text="Confirm password*"></RadzenText>
+                <RadzenTextBox @bind-Value="_signupModel.ConfirmPassword" Name="ConfirmPassword"/>
+                <RadzenRequiredValidator Component="ConfirmPassword" Text="Please, confirm your password"/>
+                <RadzenCompareValidator Visible=@(!string.IsNullOrEmpty(_signupModel.ConfirmPassword))
+                                        Value=@_signupModel.Password Component="ConfirmPassword" Text="Passwords should be the same" />
+            </RadzenStack>
+
+            <RadzenButton Text="SignUp" ButtonType="ButtonType.Submit" Style="margin-top: 15px;width: 90%"/>
+            
+            <RadzenText onclick=@(() => NavigationManager.NavigateTo("login"))
+                Style="margin-top: 20px;text-align: center;text-decoration: underline;cursor: pointer">Log into your account</RadzenText>
+        </RadzenCard>
+
+    </RadzenTemplateForm>
+
+</RadzenCard>
+
+@code {
+    private SignupModel _signupModel = new();
+
+    private async Task OnSubmit()
+    {
+        var success = await AuthService.SignUp(_signupModel.UserName, _signupModel.Password, _signupModel.Email);
+
+        if (!success)
+        {
+            NotificationService.Notify(
+                new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error, 
+                    Summary = "Failed to create account"
+                });
+
+            return;
+        }
+
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success, 
+                Summary = "Account created!"
+            });
+
+        await LoginAsync();
+    }
+
+    private async Task LoginAsync()
+    {
+        var success = await AuthService.Login(_signupModel.UserName, _signupModel.Password);
+
+        if (success)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

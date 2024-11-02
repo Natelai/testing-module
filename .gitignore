@@ -1,0 +1,49 @@
+# Папка з білдами
+bin/
+obj/
+
+# Налаштування середовища розробки
+.vscode/
+.idea/
+.DS_Store
+
+# Логи
+*.log
+logs/
+LogFiles/
+
+# Файли користувацьких налаштувань Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Папка з кешем
+_ReSharper*/ 
+*.sln.cache
+
+# Temporary files, build results and
+# build directories (Mono Auto Generated)
+mono_crash.*
+
+# Конфігураційні файли JetBrains Rider
+.idea/
+
+# Файли конфігурацій з IIS
+.vs/ 
+debug.log
+.env
+
+# Інші тимчасові файли
+*.tmp
+*.temp
+
+# Coverage
+*.coverage
+*.coveragexml
+
+# Пакети Node
+node_modules/
+temp/

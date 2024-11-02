@@ -1,0 +1,68 @@
+﻿@page "/login"
+@using Contracts.Internal
+@using Frontend.Presentation.Services
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+<RadzenImage Path="./assets/images/login_background.jpg" Style="width:100%;height:100%;z-index:1;position:absolute;top:0;left:0;" />
+
+
+<RadzenCard class="login-wrapper">
+
+    <RadzenCard class="login-card">
+        <RadzenText class="log-into-text">Log into your account</RadzenText>
+
+        <RadzenCard class="login-input-wrapper">
+            <RadzenCard class="login-input-item">
+                <RadzenText class="login-input-text">Login</RadzenText>
+                <RadzenTextBox @bind-value="_authModel.Login" class="login-input" />
+            </RadzenCard>
+
+            <RadzenCard class="login-input-item">
+                <RadzenText class="login-input-text">Password</RadzenText>
+                <RadzenFormField Style="padding: unset;margin: unset;height:50px" Variant="Variant.Flat" class="login-input">
+                    <ChildContent>
+                        <RadzenTextBox class="login-input" Style="padding: 10px" Name="PasswordVisible" @bind-Value="@_authModel.Password" Visible="@(_showPassword)" />
+                        <RadzenPassword class="login-input" Style="padding: 10px" Name="PasswordHide" @bind-Value="@_authModel.Password" Visible="@(!_showPassword)" />
+                    </ChildContent>
+                </RadzenFormField>
+                <RadzenStack Style="height:16px" Orientation="Orientation.Horizontal">
+                    <RadzenCheckBox @bind-Value="_showPassword"></RadzenCheckBox>
+                    <RadzenText Text="Show password" Style="font-size:14px" />
+                </RadzenStack>
+            </RadzenCard>
+
+            <RadzenButton class="login-button" Click="HandleLogin">Login</RadzenButton>
+            
+            <RadzenText onclick=@(() => NavigationManager.NavigateTo("signup"))
+                        Style="margin-top: 20px;text-align: center;text-decoration: underline;cursor: pointer">SignUp now!</RadzenText>
+        </RadzenCard>
+    </RadzenCard>
+
+</RadzenCard>
+
+
+@code {
+
+    private LoginModel _authModel = new();
+    private bool _showPassword = false;
+
+    private async Task HandleLogin()
+    {
+        var success = await AuthService.Login(_authModel.Login, _authModel.Password);
+
+        if (success)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error, 
+                Summary = "Invalid UserName or Password"
+            });
+    }
+}

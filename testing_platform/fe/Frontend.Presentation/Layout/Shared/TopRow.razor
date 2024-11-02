@@ -1,0 +1,16 @@
+﻿@using Frontend.Presentation.Services
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+<RadzenStack Style="height: 100%; width: 100%; display: flex !important; align-items: end !important; justify-content: center !important">
+    <RadzenButton Click="Logout" Icon="logout" IconColor="#000000" Style="background-color:transparent;box-shadow: unset;width: 20px" />
+</RadzenStack>
+
+@code {
+
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+        NavigationManager.NavigateTo("/login");
+    }
+}
