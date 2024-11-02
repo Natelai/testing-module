@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Frontend.Presentation.Layout.Shared
+@inherits LayoutComponentBase
+
+<RadzenComponents @rendermode="RenderMode.InteractiveAuto" />
+
+<RadzenNotification />
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <div class="page">
+
+                <main>
+                    <div class="top-row px-4">
+                        <TopRow />
+                    </div>
+
+                    <article class="content px-4">
+                        @Body
+                    </article>
+                </main>
+            </div>
+
+        </Authorized>
+        <NotAuthorized>
+            <PublicLayout />
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+
+
+
+
