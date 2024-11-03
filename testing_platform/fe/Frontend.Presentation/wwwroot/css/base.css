@@ -4,8 +4,9 @@
     background-color: transparent !important;
     border: none;
     position: fixed;
-    left: 17%;
+    left: 50%;
     top: 0;
+    transform: translateX(-50%);
     z-index: 2;
     display: flex;
     flex-direction: column;
