@@ -1,0 +1,29 @@
+﻿@page "/"
+@using Frontend.Presentation.Pages.Components
+
+
+<RadzenStack Style="margin-top: 50px;padding: 15px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+    
+    <TestCategory 
+        HeadText="Bug reports"
+        DescriptionText="Are you really interested in learning how to file bug reports?
+        Then you should review and take tests from this category"
+        ImagePath="./assets/images/preview-bugReports.png" />
+    
+    <TestCategory HeadText="Test cases"
+                  DescriptionText="Are you really interested in learning how to fill out test cases? 
+                Then you should review and take tests from this category"
+        ImagePath="./assets/images/preview-testCases.png" />
+        
+    <TestCategory HeadText="Unit tests"
+                  DescriptionText="Are you very interested in learning how to complete unit tests? 
+                Then you should review and take tests from this category"
+        ImagePath="./assets/images/preview-unitTesting.png" />
+
+</RadzenStack>
+
+
+
+@code {
+
+}

@@ -2,8 +2,25 @@
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<RadzenStack Style="height: 100%; width: 100%; display: flex !important; align-items: end !important; justify-content: center !important">
-    <RadzenButton Click="Logout" Icon="logout" IconColor="#000000" Style="background-color:transparent;box-shadow: unset;width: 20px" />
+<RadzenStack Orientation="Orientation.Horizontal"
+    Style="height: 100%; width: 100%; display: flex !important; align-items:center !important;
+        justify-content: space-between !important; background-color: #8AABD0;padding:0;padding-left:10px">
+    
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenText Text="ВПЗІ" 
+                    Style="margin: unset;display: flex;align-items: center;font-size: 28px;color: #000;font-weight: 700;"/>
+        
+        <RadzenButton Text="All tests" 
+                      Style="border:1px solid #000000;color:#000000;background-color: transparent;box-shadow: unset"/>
+        
+        <RadzenButton Text="Statistic" 
+                      Style="border:1px solid #000000;color:#000000;background-color: transparent;box-shadow: unset"/>
+        
+        <RadzenButton Text="Premium" Icon="star" IconColor="#000000"  
+                      Style="border:1px solid #000000;color:#000000;background-color: #FFCC00;box-shadow: unset" />
+    </RadzenStack>
+
+    <RadzenButton Click="Logout" Icon="logout" IconColor="#000000" Style="background-color: transparent; box-shadow: unset; width: 20px;margin-right: 10px"/>
 </RadzenStack>
 
 @code {
