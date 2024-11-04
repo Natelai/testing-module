@@ -1,0 +1,28 @@
+﻿
+<RadzenCard
+    Style="width: 32%; background-color: #F0F0F0; gap: 10px; display: flex; justify-content: center;
+        flex-direction: column;border-radius: 30px">
+    
+    <div style="width: 100%; display: flex; align-items: center;justify-content: center">
+        <RadzenImage Path="@ImagePath"
+                     Style="width: 95%; height: auto"/>
+    </div>
+
+    <RadzenText Text="@HeadText"
+                Style="font-size: 26px; font-weight: 700; color: #000;"/>
+
+    <RadzenText Text="@DescriptionText"
+                Style="margin: 20px 0; font-size: 20px"/>
+
+    <RadzenButton Text="To tests"
+                  Style="width: 45%;height: 45px;color: #000;font-size: 16px;font-weight: 600;border-radius: 30px;
+                         border: 1px solid #000;background-color: transparent;"/>
+</RadzenCard>
+
+@code {
+    [Parameter] public required string ImagePath { get; set; } = null!;
+
+    [Parameter] public required string HeadText { get; set; } = null!;
+
+    [Parameter] public required string DescriptionText { get; set; } = null!;
+}
