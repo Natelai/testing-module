@@ -1,0 +1,14 @@
+﻿.test-preview-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.test-preview-item {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    text-align: center;
+    border-radius: 25px;
+}

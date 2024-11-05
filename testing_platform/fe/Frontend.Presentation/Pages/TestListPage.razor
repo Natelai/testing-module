@@ -1,0 +1,113 @@
+﻿@page "/tests"
+
+@using Contracts.Internal
+@using Contracts.Internal.Enums
+@using Frontend.Presentation.Pages.Components
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="20px">
+
+    <RadzenDropDown TValue="string" Placeholder="Categoty" @bind-Value="_category"
+                    Data=@(new List<string>(["C1", "C2"]))/>
+
+    <RadzenDropDown TValue="string" Placeholder="Difficulty" @bind-Value="_difficulty"
+                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())/>
+
+    <RadzenDropDown TValue="string" Placeholder="Tags" @bind-Value="_tag"
+                    Data=@(new List<string>(["C1", "C2"]))/>
+
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
+    <RadzenToggleButton Text="Completed" Icon="check" IconColor=@(_completedFilter ? "#fff" : "#000" ) 
+                        Shade="Shade.Default" ToggleShade="Shade.Default"
+                        Click=@(() => _completedFilter = !_completedFilter)
+                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Success"
+                        Style="border:1px solid #000;"/>
+    
+    <RadzenToggleButton Text="Favourite" Icon="favorite" IconColor=@(_favouriteFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
+                        Click=@(() => _favouriteFilter = !_favouriteFilter)
+                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Danger"
+                        Style="border:1px solid #000;" />
+    
+    <RadzenToggleButton Text="Premium" Icon="star" IconColor=@(_premiumFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
+                        Click=@(() => _premiumFilter = !_premiumFilter)
+                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Secondary" 
+                        Style="border:1px solid #000;" />
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="15px" Style="margin-top: 10px">
+    <RadzenButton Variant="Variant.Text" Text="Order by date" Icon=@(_orderByDateAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
+                  Click="OnDateSortingChanged" IconColor="#000" Style="color:#000000" />
+
+    <RadzenButton Variant="Variant.Text" Text="Order by duration" Icon=@(_orderByDurabilityAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
+                  Click="OnDurationSortingChanged" IconColor="#000" Style="color: #000000" />
+</RadzenStack>
+
+<div class="test-preview-container">
+    @foreach (var item in _previewModels)
+    {
+        <div class="test-preview-item">
+            <TestPreview Test="@item" />
+        </div>
+    }
+</div>
+
+@code {
+
+    private bool _completedFilter;
+    private bool _favouriteFilter;
+    private bool _premiumFilter;
+
+    private string _category = null!;
+    private string _difficulty = null!;
+    private string _tag = null!;
+
+    private bool _orderByDateAsc = true;
+    private bool _orderByDurabilityAsc = true;
+
+    private List<TestPreviewModel> _previewModels = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _previewModels = await LoadDataAsync();
+    }
+
+    private List<string> LoadTags()
+    {
+        // TODO: Implement on back-end side
+        return [];
+    }
+
+    private async Task<List<TestPreviewModel>> LoadDataAsync()
+    {
+        // TODO: Remove mocked data
+        return [
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = true, IsCompleted = false, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = false, IsPremium = true, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = true, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = true, IsCompleted = false, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = false, IsPremium = true, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
+            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = true, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue }
+        ];
+    }
+
+    // TODO: Finish method by requesting be
+    private async Task RefreshDataStateAsync()
+    {
+        _previewModels = await LoadDataAsync();
+        StateHasChanged();
+    }
+
+    // TODO: Finish method be requesting be
+    private async Task OnDateSortingChanged()
+    {
+        _orderByDateAsc = !_orderByDateAsc;
+        await RefreshDataStateAsync();
+    }
+
+    private async Task OnDurationSortingChanged()
+    {
+        _orderByDurabilityAsc = !_orderByDurabilityAsc;
+        await RefreshDataStateAsync();
+    }
+}
