@@ -38,35 +38,17 @@
     
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
         
-        @if (Test.IsCompleted)
-        {
-            <RadzenCard class="test-preview-status-box" Style="background-color: #4caf50">
-                <RadzenIcon IconColor="#000" Icon="check" />
-                <RadzenText Style="color:#000000">Completed</RadzenText>
-            </RadzenCard>
-        }
-        else
-        {
-            <RadzenCard class="test-preview-status-box" Style="background-color: transparent">
-                <RadzenIcon IconColor="#000" Icon="check" />
-                <RadzenText Style="color:#000000">Completed</RadzenText>
-            </RadzenCard>
-        }
+        <RadzenCard class="test-preview-status-box" 
+                    Style=@string.Concat("background-color:", Test.IsCompleted ? "#4caf50" : "transparent")>
+            <RadzenIcon IconColor="#000" Icon="check" />
+            <RadzenText Style="color:#000000">Completed</RadzenText>
+        </RadzenCard>
         
-        @if (Test.IsFavourite)
-        {
-            <RadzenCard class="test-preview-status-box" Style="background-color: #f44336">
-                <RadzenIcon IconColor="#000" Icon="favorite" />
-                <RadzenText Style="color:#000000">Favourite</RadzenText>
-            </RadzenCard>
-        }
-        else
-        {
-            <RadzenCard class="test-preview-status-box" Style="background-color: transparent">
-                <RadzenIcon IconColor="#000" Icon="favorite" />
-                <RadzenText Style="color:#000000">Favourite</RadzenText>
-            </RadzenCard>
-        }
+        <RadzenCard class="test-preview-status-box" 
+                    Style=@string.Concat("background-color:", Test.IsFavourite ? "#f44336" : "transparent")>
+            <RadzenIcon IconColor="#000" Icon="favorite" />
+            <RadzenText Style="color:#000000">Favourite</RadzenText>
+        </RadzenCard>
 
     </RadzenStack>
 </RadzenCard>
