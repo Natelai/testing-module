@@ -130,3 +130,15 @@
 .rz-form-field-content {
     height: 50px;
 }
+
+.test-preview-status-box {
+    width: 48% !important;
+    height: 40px !important;
+    padding: unset !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 35px !important;
+    color: #000000 !important;
+    border: 1px solid #000000
+}
