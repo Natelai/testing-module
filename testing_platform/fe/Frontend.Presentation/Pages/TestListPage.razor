@@ -1,45 +1,54 @@
 ﻿@page "/tests"
 
+@using Contracts.APICommunication
+@using Contracts.APICommunication.Enums
 @using Contracts.Internal
 @using Contracts.Internal.Enums
 @using Frontend.Presentation.Pages.Components
+@using Frontend.Presentation.Services
+@using TestCategory = Frontend.Presentation.Pages.Components.TestCategory
+@inject TestPreviewService TestPreviewService
+@inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="20px">
 
     <RadzenDropDown TValue="string" Placeholder="Categoty" @bind-Value="_category"
-                    Data=@(new List<string>(["C1", "C2"]))/>
+                    Data=@(Enum.GetNames(typeof(Contracts.APICommunication.Enums.TestCategory)).ToList())
+                    Change="RefreshDataStateAsync"/>
 
     <RadzenDropDown TValue="string" Placeholder="Difficulty" @bind-Value="_difficulty"
-                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())/>
+                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
+                    Change="RefreshDataStateAsync"/>
 
-    <RadzenDropDown TValue="string" Placeholder="Tags" @bind-Value="_tag"
-                    Data=@(new List<string>(["C1", "C2"]))/>
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Tags" @bind-Value="_tags" LoadData="LoadTags" 
+                    AllowVirtualization="true" Count=@_tagCount AllowFiltering="true" Data=@_tagsData
+                    Change="RefreshDataStateAsync"/>
 
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
     <RadzenToggleButton Text="Completed" Icon="check" IconColor=@(_completedFilter ? "#fff" : "#000" ) 
                         Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(() => _completedFilter = !_completedFilter)
+                        Click=@(async () => { _completedFilter = !_completedFilter; await RefreshDataStateAsync(); })
                         ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Success"
                         Style="border:1px solid #000;"/>
     
     <RadzenToggleButton Text="Favourite" Icon="favorite" IconColor=@(_favouriteFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(() => _favouriteFilter = !_favouriteFilter)
+                        Click=@(async () => { _favouriteFilter = !_favouriteFilter; await RefreshDataStateAsync(); })
                         ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Danger"
                         Style="border:1px solid #000;" />
     
     <RadzenToggleButton Text="Premium" Icon="star" IconColor=@(_premiumFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(() => _premiumFilter = !_premiumFilter)
+                        Click=@(async () => { _premiumFilter = !_premiumFilter; await RefreshDataStateAsync(); })
                         ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Secondary" 
                         Style="border:1px solid #000;" />
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="15px" Style="margin-top: 10px">
-    <RadzenButton Variant="Variant.Text" Text="Order by date" Icon=@(_orderByDateAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
+    <RadzenButton Variant="Variant.Text" Text="Order by date" Icon=@(_orderDateDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
                   Click="OnDateSortingChanged" IconColor="#000" Style="color:#000000" />
 
-    <RadzenButton Variant="Variant.Text" Text="Order by duration" Icon=@(_orderByDurabilityAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
+    <RadzenButton Variant="Variant.Text" Text="Order by duration" Icon=@(_orderDurationDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
                   Click="OnDurationSortingChanged" IconColor="#000" Style="color: #000000" />
 </RadzenStack>
 
@@ -60,54 +69,102 @@
 
     private string _category = null!;
     private string _difficulty = null!;
-    private string _tag = null!;
+    private List<string> _tags = null!;
 
-    private bool _orderByDateAsc = true;
-    private bool _orderByDurabilityAsc = true;
+    private bool _orderByDate = false;
+    private bool _orderByDuration = false;
+    private bool _orderDateDirectionAsc = false;
+    private bool _orderDurationDirectionAsc = false;
 
     private List<TestPreviewModel> _previewModels = [];
 
+    private List<string> _tagsData = [];
+    private string _lastTagFilter = null!;
+    private int _tagCount;
+
     protected override async Task OnInitializedAsync()
     {
+        _category = LocalStorage.GetItem<string>("testCategory");
         _previewModels = await LoadDataAsync();
+        await LoadTags(new LoadDataArgs() { Top = 10 });
     }
 
-    private List<string> LoadTags()
+    private async Task LoadTags(LoadDataArgs args)
     {
-        // TODO: Implement on back-end side
-        return [];
+        await Task.Yield();
+
+        if (!string.IsNullOrEmpty(args.Filter) && _lastTagFilter != args.Filter)
+        {
+            args.Skip = 0;
+        }
+
+        if (!string.IsNullOrEmpty(args.Filter))
+        {
+            _lastTagFilter = args.Filter;
+        }
+
+        var rsp = await TestPreviewService.GetTagsList(
+            args.Top.HasValue ? args.Top.Value : 10,
+            args.Skip.HasValue ? args.Skip.Value : 0,
+            args.Filter);
+
+        _tagsData = rsp.Data.ToList();
+        _tagCount = rsp.TotalCount;
+
+        StateHasChanged();
     }
 
     private async Task<List<TestPreviewModel>> LoadDataAsync()
     {
-        // TODO: Remove mocked data
-        return [
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = true, IsCompleted = false, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = false, IsPremium = true, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = true, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = true, IsCompleted = false, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = false, IsPremium = true, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue },
-            new TestPreviewModel() {Caption = "Test1", Category = "Category1", Complexity = "Easy", DurationInMinutes = 10, IsFavourite = false, IsCompleted = true, IsPremium = false, Tags = ["Tag1", "Tag2", "Tag3"], UploadDate = DateOnly.MinValue }
-        ];
+
+        var request = new TestListRequest
+        {
+            PagedRequest = new PagedRequest
+            {
+                Offset = 0,
+                Limit = 20
+            },
+            TestListOrdering = new TestListOrderingDto
+            {
+                OrderByDate = _orderByDate,
+                OrderByDuration = _orderByDuration,
+                OrderInAscOrder = _orderByDate ? _orderDateDirectionAsc : _orderDurationDirectionAsc
+            },
+            TestCategory = Enum.TryParse<Contracts.APICommunication.Enums.TestCategory>(_category, true, out var categoryEnum) 
+                ? categoryEnum : Contracts.APICommunication.Enums.TestCategory.BugReports,
+            TestDifficulty = Enum.TryParse<TestDifficulty>(_difficulty, true, out var difficultyEnum) ? difficultyEnum : null,
+            Tags = _tags,
+            IsCompleted = _completedFilter,
+            IsFavourite = _favouriteFilter,
+            IsPremium = _premiumFilter,
+        };
+
+        var tests = await TestPreviewService.GetPagedTestList(request);
+
+        return tests;
     }
 
-    // TODO: Finish method by requesting be
     private async Task RefreshDataStateAsync()
     {
         _previewModels = await LoadDataAsync();
         StateHasChanged();
     }
 
-    // TODO: Finish method be requesting be
     private async Task OnDateSortingChanged()
     {
-        _orderByDateAsc = !_orderByDateAsc;
+        _orderByDate = true;
+        _orderByDuration = false;
+        _orderDateDirectionAsc = !_orderDateDirectionAsc;
+
         await RefreshDataStateAsync();
     }
 
     private async Task OnDurationSortingChanged()
     {
-        _orderByDurabilityAsc = !_orderByDurabilityAsc;
+        _orderByDuration = true;
+        _orderByDate = false;
+        _orderDurationDirectionAsc = !_orderDurationDirectionAsc;
+
         await RefreshDataStateAsync();
     }
 }

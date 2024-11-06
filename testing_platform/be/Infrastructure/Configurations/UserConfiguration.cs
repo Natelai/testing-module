@@ -11,5 +11,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.IsPremium)
             .HasDefaultValue(false);
+
+        builder.HasMany(x => x.CompletedTests)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId);
+
+        builder.HasMany(x => x.FavouriteTests)
+            .WithOne(x => x.User)
+            .HasForeignKey(x => x.UserId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenCard
     Style="width: 32%; background-color: #F0F0F0; gap: 10px; display: flex; justify-content: center;
@@ -9,13 +10,13 @@
                      Style="width: 95%; height: auto"/>
     </div>
 
-    <RadzenText Text="@HeadText" Click=@(() => NavigationManager.NavigateTo("/tests"))
+    <RadzenText Text="@HeadText"
                 Style="font-size: 26px; font-weight: 700; color: #000;"/>
 
-    <RadzenText Text="@DescriptionText" Click=@(() => NavigationManager.NavigateTo("/tests"))
+    <RadzenText Text="@DescriptionText"
                 Style="margin: 20px 0; font-size: 20px"/>
 
-    <RadzenButton Text="To tests" Click=@(() => NavigationManager.NavigateTo("/tests"))
+    <RadzenButton Text="To tests" Click=@(() => SaveCategoryAndNavigate())
                   Style="width: 45%;height: 45px;color: #000;font-size: 16px;font-weight: 600;border-radius: 30px;
                          border: 1px solid #000;background-color: transparent;"/>
 </RadzenCard>
@@ -26,4 +27,12 @@
     [Parameter] public required string HeadText { get; set; } = null!;
 
     [Parameter] public required string DescriptionText { get; set; } = null!;
+
+    [Parameter] public required string Category { get; set; } = null!;
+
+    private void SaveCategoryAndNavigate()
+    {
+        LocalStorage.SetItem("testCategory", Category);
+        NavigationManager.NavigateTo("/tests");
+    }
 }
