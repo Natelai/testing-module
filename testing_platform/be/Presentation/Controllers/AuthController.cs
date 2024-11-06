@@ -38,7 +38,6 @@ public class AuthController(
         var authClaims = new List<Claim>
         {
             new(ClaimTypes.Name, user.UserName),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
         authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -80,8 +79,9 @@ public class AuthController(
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
-            expires: DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:ExpiresIn"])),
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiresIn"])),
             claims: authClaims,
+            notBefore: DateTime.UtcNow,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
 
