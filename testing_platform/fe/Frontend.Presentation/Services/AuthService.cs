@@ -1,6 +1,7 @@
 ﻿using Contracts.APICommunication;
 using Contracts.Internal;
 using Microsoft.JSInterop;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -55,5 +56,22 @@ public class AuthService
     public async Task<string> GetToken()
     {
         return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+    }
+
+    public async Task<string?> GetUsernameFromToken()
+    {
+        var token = await GetToken();
+        if (string.IsNullOrEmpty(token))
+        {
+            return null;
+        }
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var usernameClaim = jwtToken.Claims
+            .FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+
+        return usernameClaim?.Value;
     }
 }

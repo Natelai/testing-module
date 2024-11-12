@@ -1,0 +1,66 @@
+﻿@page "/account"
+@using Frontend.Presentation.Pages.Modals
+@inject DialogService DialogService
+@inject NavigationManager NavigationManager
+
+<RadzenText Style="width: 100%;text-align: center;color: #000000;font-size: 64px;font-weight: 700;">Your Account</RadzenText>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="15px">
+    <RadzenImage Path="./assets/images/avatar-default.png" Style="height:250px;width: auto" ></RadzenImage>
+    
+    <RadzenStack Style="height: 100%; padding: 20px 0" Gap="20px">
+        <RadzenText Text="@_userName" Style="color:#000000;font-size: 60px;font-weight: 600"/>
+        <RadzenText Text="@_email" Style="color:#000000;font-size: 48px;font-weight: 500"/>
+    </RadzenStack>
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" Style="margin-top: 50px;padding:10px">
+    <RadzenButton Click="ShowEditUserInfoAsync"
+        Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px; background-color: transparent;color: #000000">
+        Edit user information
+    </RadzenButton>
+    <RadzenButton Click="ShowChangePasswordModalAsync"
+        Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
+        Change password
+    </RadzenButton>
+    <RadzenButton Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
+        Edit tags
+    </RadzenButton>
+    <RadzenButton Click=@(() => NavigationManager.NavigateTo("/analytics"))
+        Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
+        Analytics & Statistics
+    </RadzenButton>
+</RadzenStack>
+
+@code {
+    private string _email = "testEmail@gmail.com";
+    private string _userName = "Test User";
+
+    private async Task ShowChangePasswordModalAsync()
+    {
+        await DialogService.OpenAsync<ChangePasswordModal>("",
+            new Dictionary<string, object>(),
+            new DialogOptions()
+                {
+                    ShowTitle = false,
+                    Resizable = false,
+                    Draggable = true,
+                    Width = "500px",
+                    ShowClose = true,
+                });
+    }
+
+    private async Task ShowEditUserInfoAsync()
+    {
+        await DialogService.OpenAsync<EditUserModal>("",
+            new Dictionary<string, object>(),
+            new DialogOptions()
+            {
+                ShowTitle = false,
+                Resizable = false,
+                Draggable = true,
+                Width = "500px",
+                ShowClose = true,
+            });
+    }
+}

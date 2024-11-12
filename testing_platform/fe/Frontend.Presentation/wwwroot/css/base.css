@@ -142,3 +142,7 @@
     color: #000000 !important;
     border: 1px solid #000000
 }
+
+.rz-form-field-content {
+    height: 100% !important;
+}

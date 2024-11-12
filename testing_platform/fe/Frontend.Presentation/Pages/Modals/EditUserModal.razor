@@ -1,0 +1,39 @@
+﻿@inject DialogService DialogService
+
+<RadzenCard>
+    <RadzenStack Style="width: 100%" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenButton Icon="close" Click="() => DialogService.Close()"
+                      IconColor="#000000" Style="background-color: transparent; box-shadow: none" />
+    </RadzenStack>
+
+    <RadzenText Style="width: 100%;text-align: center;color:#1e1e1e;font-size: 1.5rem;font-weight: 400" Text="Edit User Information" />
+
+    <RadzenStack Style="margin-top: 30px" Gap="25px">
+
+        <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+            <RadzenText Text="User name: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+            <RadzenFormField Variant="Variant.Flat">
+                <ChildContent>
+                    <RadzenTextBox Style="padding: 10px" Name="username" />
+                </ChildContent>
+            </RadzenFormField>
+        </RadzenStack>
+
+        <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+            <RadzenText Text="Email: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+            <RadzenFormField Variant="Variant.Flat">
+                <ChildContent>
+                    <RadzenTextBox Style="padding: 10px" Name="email" />
+                </ChildContent>
+            </RadzenFormField>
+        </RadzenStack>
+    </RadzenStack>
+
+    <RadzenStack Style="width: 100%;margin-top: 40px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+        <RadzenButton Style="width: 200px;height:50px;border-radius: 30px;background-color: #34c759;color:#000000">Save</RadzenButton>
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+
+}
