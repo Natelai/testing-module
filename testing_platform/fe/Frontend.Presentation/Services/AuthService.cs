@@ -21,7 +21,7 @@ public class AuthService
         _httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
     }
 
-    public async Task<bool> Login(string username, string password)
+    public async Task<bool> LoginAsync(string username, string password)
     {
         var loginModel = new { Username = username, Password = password };
         var content = new StringContent(JsonSerializer.Serialize(loginModel), Encoding.UTF8, "application/json");
@@ -38,12 +38,25 @@ public class AuthService
         return false;
     }
 
-    public async Task<bool> SignUp(string username, string password, string email)
+    public async Task<bool> SignUpAsync(string username, string password, string email)
     {
         var signUpModel = new { Username = username, Password = password, Email = email };
         var content = new StringContent(JsonSerializer.Serialize(signUpModel), Encoding.UTF8, "application/json");
 
         var response = await _httpClient.PostAsync("api/auth/signup", content);
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool>? ChangePasswordAsync(string oldPassword, string newPassword)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", await GetToken());
+
+        var changePasswordModel = new { OldPassword = oldPassword, NewPassword = newPassword };
+        var content = new StringContent(JsonSerializer.Serialize(changePasswordModel), Encoding.UTF8,
+            "application/json");
+
+        var response = await _httpClient.PostAsync("api/auth/change-password", content);
         return response.IsSuccessStatusCode;
     }
 

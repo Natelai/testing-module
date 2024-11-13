@@ -56,7 +56,7 @@
 
     private async Task OnSubmit()
     {
-        var success = await AuthService.SignUp(_signupModel.UserName, _signupModel.Password, _signupModel.Email);
+        var success = await AuthService.SignUpAsync(_signupModel.UserName, _signupModel.Password, _signupModel.Email);
 
         if (!success)
         {
@@ -82,7 +82,7 @@
 
     private async Task LoginAsync()
     {
-        var success = await AuthService.Login(_signupModel.UserName, _signupModel.Password);
+        var success = await AuthService.LoginAsync(_signupModel.UserName, _signupModel.Password);
 
         if (success)
         {

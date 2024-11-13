@@ -1,39 +1,106 @@
-﻿@inject DialogService DialogService
+﻿@using Contracts.APICommunication
+@using Frontend.Presentation.Services
+@inject DialogService DialogService
+@inject AuthService AuthService
+@inject UserService UserService
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
 
-<RadzenCard>
-    <RadzenStack Style="width: 100%" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
-        <RadzenButton Icon="close" Click="() => DialogService.Close()"
-                      IconColor="#000000" Style="background-color: transparent; box-shadow: none" />
-    </RadzenStack>
-
-    <RadzenText Style="width: 100%;text-align: center;color:#1e1e1e;font-size: 1.5rem;font-weight: 400" Text="Edit User Information" />
-
-    <RadzenStack Style="margin-top: 30px" Gap="25px">
-
-        <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
-            <RadzenText Text="User name: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
-            <RadzenFormField Variant="Variant.Flat">
-                <ChildContent>
-                    <RadzenTextBox Style="padding: 10px" Name="username" />
-                </ChildContent>
-            </RadzenFormField>
+<RadzenTemplateForm TItem="UpdateUserProfileRequest" Data=@_request class="login-card" Submit="OnSubmit">
+    <RadzenCard>
+        <RadzenStack Style="width: 100%" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+            <RadzenButton Icon="close" Click="() => DialogService.Close()"
+                          IconColor="#000000" Style="background-color: transparent; box-shadow: none" />
         </RadzenStack>
 
-        <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
-            <RadzenText Text="Email: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
-            <RadzenFormField Variant="Variant.Flat">
-                <ChildContent>
-                    <RadzenTextBox Style="padding: 10px" Name="email" />
-                </ChildContent>
-            </RadzenFormField>
-        </RadzenStack>
-    </RadzenStack>
+        <RadzenText Style="width: 100%;text-align: center;color:#1e1e1e;font-size: 1.5rem;font-weight: 400" Text="Edit User Information" />
 
-    <RadzenStack Style="width: 100%;margin-top: 40px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
-        <RadzenButton Style="width: 200px;height:50px;border-radius: 30px;background-color: #34c759;color:#000000">Save</RadzenButton>
-    </RadzenStack>
-</RadzenCard>
+        <RadzenStack Style="margin-top: 30px" Gap="25px">
+
+            <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+                <RadzenText Text="User name: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+                <RadzenFormField Variant="Variant.Flat">
+                    <ChildContent>
+                        <RadzenTextBox Style="padding: 10px" Name="Username" @bind-Value="_request.UserName" />
+                    </ChildContent>
+                </RadzenFormField>
+            </RadzenStack>
+            <RadzenRequiredValidator Component="Username" Text="Username is required" />
+
+            <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+                <RadzenText Text="Email: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+                <RadzenFormField Variant="Variant.Flat">
+                    <ChildContent>
+                        <RadzenTextBox Style="padding: 10px" Name="Email" @bind-Value="_request.Email"/>
+                    </ChildContent>
+                </RadzenFormField>
+            </RadzenStack>
+            <RadzenRequiredValidator Component="Email" Text="Email is required" />
+            <RadzenEmailValidator Component="Email" Text="Please, provide valid email" />
+        
+            <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+                <RadzenText Text="FirstName: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+                <RadzenFormField Variant="Variant.Flat">
+                    <ChildContent>
+                        <RadzenTextBox Style="padding: 10px" Name="Email" @bind-Value="_request.FirstName" />
+                    </ChildContent>
+                </RadzenFormField>
+            </RadzenStack>
+        
+            <RadzenStack Style="width: 100%" JustifyContent="JustifyContent.SpaceBetween" Orientation="Orientation.Horizontal">
+                <RadzenText Text="LastName: " Style="font-size: 1.2rem;font-weight: 400;display: flex;align-items: center;" />
+                <RadzenFormField Variant="Variant.Flat">
+                    <ChildContent>
+                        <RadzenTextBox Style="padding: 10px" Name="email" @bind-Value="_request.LastName" />
+                    </ChildContent>
+                </RadzenFormField>
+            </RadzenStack>
+        </RadzenStack>
+
+        <RadzenStack Style="width: 100%;margin-top: 40px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+            <RadzenButton Style="width: 200px;height:50px;border-radius: 30px;background-color: #34c759;color:#000000"
+                          ButtonType="ButtonType.Submit">Save</RadzenButton>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenTemplateForm>
 
 @code {
+    private UpdateUserProfileRequest _request = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var rsp = await UserService.GetFullUserProfileAsync();
+
+        _request.Email = rsp.Email;
+        _request.FirstName = rsp.FirstName;
+        _request.LastName = rsp.LastName;
+        _request.UserName = rsp.UserName;
+    }
+
+    private async Task OnSubmit()
+    {
+        var rsp = await UserService.UpdateUserProfileAsync(_request);
+
+        if (rsp)
+        {
+            NotificationService.Notify(
+                new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success, 
+                    Summary = "Your profile has been changed"
+                });
+
+            await AuthService.Logout();
+            NavigationManager.NavigateTo("/login");
+
+            return;
+        }
+
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Request failed"
+            });
+    }
 }

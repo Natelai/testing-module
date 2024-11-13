@@ -20,8 +20,11 @@ var configData = await httpClient.GetFromJsonAsync<AppConfiguration>("appsetting
 builder.Services.AddSingleton(configData?.ApiSettings);
 
 builder.Services.AddRadzenComponents();
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TestPreviewService>();
+builder.Services.AddScoped<UserService>();
+
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 
