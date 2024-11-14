@@ -2,6 +2,7 @@
 using DTOs.Requests.Auth;
 using DTOs.Responses.Auth;
 using Infrastructure.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -70,6 +71,34 @@ public class AuthController(
         await _userManager.AddToRoleAsync(user, RolesProvider.Student);
 
         return Ok(new { message = "User registered successfully" });
+    }
+
+    [HttpPost("change-password")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken ct)
+    {
+        var userName = User.Identity?.Name;
+
+        if (userName == null)
+        {
+            return Unauthorized("User is not logged in");
+        }
+
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return Ok();
     }
 
     private JwtSecurityToken GetToken(List<Claim> authClaims)

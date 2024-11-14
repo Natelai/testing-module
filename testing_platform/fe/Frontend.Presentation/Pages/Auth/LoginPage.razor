@@ -50,7 +50,7 @@
 
     private async Task HandleLogin()
     {
-        var success = await AuthService.Login(_authModel.Login, _authModel.Password);
+        var success = await AuthService.LoginAsync(_authModel.Login, _authModel.Password);
 
         if (success)
         {

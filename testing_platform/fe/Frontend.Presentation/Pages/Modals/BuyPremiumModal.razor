@@ -1,0 +1,98 @@
+﻿@using Contracts.APICommunication
+@using Frontend.Presentation.Services
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject UserService UserService
+
+<RadzenTemplateForm TItem="BuyPremiumRequest" Data="_request" Submit="OnSubmit">
+    <RadzenCard Style="width: 100%; height: 100%; border-radius: 25px; background-color: transparent; position: relative; overflow: hidden">
+        <RadzenImage Path="./assets/images/premium-background.png"
+                     Style="position: absolute; top: 0; left: 0; width: 60%; height: 130px; z-index: -1; opacity: 0.4;" />
+
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenImage Path="./assets/images/premium-title.png"></RadzenImage>
+            <RadzenButton Icon="close" Click="() => DialogService.Close()"
+                          IconColor="#000000" Style="background-color: transparent; box-shadow: none"/>
+        </RadzenStack>
+
+        <RadzenStack>
+            <RadzenText Text="Get more with Premium Access" Style="font-size: 1.7rem; font-weight: 500"/>
+        </RadzenStack>
+
+        <RadzenStack Gap="15px" Style="margin-top: 40px">
+            <RadzenText Text="Premium Tests 📈:  Take advanced tests to elevate your knowledge to the next level!"
+                        Style="font-size: 1.2rem; font-weight: 600"/>
+
+            <RadzenText Text="Hints 💡:  Get extra hints to better understand the material and complete tasks more effectively."
+                        Style="font-size: 1.2rem; font-weight: 600"/>
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Vertical" Style="margin-top: 30px">
+            <RadzenFormField Text="Credit Card Number" Variant="Variant.Text" Style="width: 100%; height: 70px" >
+                <ChildContent>
+                    <RadzenMask Style="font-size: 2rem" Mask="**** **** **** ****" CharacterPattern="[0-9]"
+                                Placeholder="XXXX XXXX XXXX XXXX" Name="CardNumber" @bind-Value="_request.CardNumber" />
+                </ChildContent>
+            </RadzenFormField>
+            
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+                <RadzenFormField Text="Expiration Date" Variant="Variant.Text" Style="width: 49%; height: 70px">
+                    <ChildContent>
+                        <RadzenMask Style="font-size: 2rem" Mask="**/**" CharacterPattern="[0-9]"
+                                    Placeholder="MM/YY" Name="CardExp" @bind-Value="_request.ExpDate" />
+                    </ChildContent>
+                </RadzenFormField>
+
+                <RadzenFormField Text="CVV" Variant="Variant.Text" Style="width: 49%; height: 70px">
+                    <ChildContent>
+                        <RadzenMask Style="font-size: 2rem" Mask="***" CharacterPattern="[0-9]" 
+                                    Placeholder="XXX" Name="CardCvv" @bind-Value="_request.Cvv" />
+                    </ChildContent>
+                </RadzenFormField>
+
+            </RadzenStack>
+
+        </RadzenStack>
+
+        <RadzenStack Style="width: 100%; margin-top: 20px" JustifyContent="JustifyContent.Center" Orientation="Orientation.Horizontal">
+            <RadzenButton Text="Purchase" ButtonType="ButtonType.Submit"
+                          Style="background-color: #ffcc00; width: 25%; height: 60px; border-radius: 40px; font-size: 1.4rem; color: #000000;"/>
+        </RadzenStack>
+
+        <RadzenStack Style="width: 100%; margin-top: 10px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center">
+            <RadzenText Style="width: 60%; text-align: center;">
+                This is a monthly subscription. Payment will be charged automatically each month. You can cancel anytime.
+            </RadzenText>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenTemplateForm>
+
+@code {
+
+    private BuyPremiumRequest _request = new();
+
+    private async Task OnSubmit()
+    {
+        var rsp = await UserService.UpdatePremiumStatusAsync();
+
+        if (rsp)
+        {
+            NotificationService.Notify(
+                new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success, 
+                    Summary = "Your account type has been updated"
+                });
+
+            return;
+        }
+
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Request failed"
+            });
+
+    }
+}

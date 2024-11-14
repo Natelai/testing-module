@@ -1,0 +1,116 @@
+﻿@page "/analytics"
+
+<RadzenText Style="width: 100%;text-align: center;font-size: 1.5rem;font-weight: 500">Completed tests for last 2 weeks</RadzenText>
+<div class="rz-p-0 rz-p-md-12">
+    <RadzenChart>
+        <RadzenColumnSeries Title="Completed tests" Data="@_barData" CategoryProperty="Date" ValueProperty="CompletedCount" />
+    </RadzenChart>
+</div>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+    <RadzenText Style="margin-top: 40px;width: 100%;text-align: center;font-size: 1.5rem;font-weight: 500">Completed tests for last 2 weeks</RadzenText>
+    <RadzenText Style="margin-top: 40px;width: 100%;text-align: center;font-size: 1.5rem;font-weight: 500">Tests progress</RadzenText>
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+    <RadzenStack Style="width: 100%; max-width: 600px;">
+        <RadzenChart>
+            <RadzenDonutSeries Data="_donutData" CategoryProperty="Status" ValueProperty="Count" TotalAngle="180" StartAngle="180">
+            </RadzenDonutSeries>
+        </RadzenChart>
+    </RadzenStack>
+    
+    <RadzenStack Style="width: 100%; max-width: 600px;">
+        <RadzenChart>
+            <RadzenPieSeries Data="@_pieData" CategoryProperty="Score" ValueProperty="Count">
+            </RadzenPieSeries>
+        </RadzenChart>
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+
+    public class BarDataItem
+    {
+        public DateOnly Date { get; set; }
+        public int CompletedCount { get; set; }
+    }
+
+    public class DonutDataItem
+    {
+        public string Status { get; set; }
+        public int Count { get; set; }
+    }
+
+    public class PieDataItem
+    {
+        public string Score { get; set; }
+        public int Count { get; set; }
+    }
+
+    private BarDataItem[] _barData;
+
+    private readonly DonutDataItem[] _donutData =
+    [
+        new DonutDataItem()
+        {
+            Status = "Completed",
+            Count = 35,
+        },
+        new DonutDataItem()
+        {
+            Status = "Stopped",
+            Count = 7,
+        },
+        new DonutDataItem()
+        {
+            Status = "Favourites",
+            Count = 5,
+        }
+    ];
+
+    private PieDataItem[] _pieData =
+    [
+        new PieDataItem()
+        {
+            Count = 29,
+            Score = "High",
+        },
+        new PieDataItem()
+        {
+            Count = 10,
+            Score = "Medium",
+        },
+        new PieDataItem()
+        {
+            Count = 8,
+            Score = "Low",
+        }
+    ];
+
+    protected override Task OnInitializedAsync()
+    {
+        _barData = GenerateDummyCompletedTestAnalytics(14);
+
+        return Task.CompletedTask;
+    }
+
+    private BarDataItem[] GenerateDummyCompletedTestAnalytics(int count)
+    {
+        var data = new List<BarDataItem>();
+
+        var rnd = new Random();
+
+        for (var i = 0; i < count; i++)
+        {
+            data.Add(
+                new BarDataItem()
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Now).AddDays(-1 * (count-i)),
+                    CompletedCount = rnd.Next() % 8
+                });
+        }
+
+        return data.ToArray();
+    }
+}
