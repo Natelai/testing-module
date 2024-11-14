@@ -1,28 +1,106 @@
 ﻿@page "/"
-@using Frontend.Presentation.Pages.Components
+@inject NavigationManager NavigationManager
 
-
-<RadzenStack Style="margin-top: 50px;padding: 15px" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+<RadzenStack Orientation="Orientation.Horizontal" Style="padding: 2%;gap:5%">
+    <RadzenImage Style="width:45%;height:auto;border-radius: 40px" Path="./assets/images/testing-module.png" />
     
-    <TestCategory 
-        HeadText="Bug reports" Category="BugReports"
-        DescriptionText="Are you really interested in learning how to file bug reports?
-        Then you should review and take tests from this category"
-        ImagePath="./assets/images/preview-bugReports.png" />
-    
-    <TestCategory HeadText="Test cases" Category="TestCases"
-                  DescriptionText="Are you really interested in learning how to fill out test cases? 
-                Then you should review and take tests from this category"
-        ImagePath="./assets/images/preview-testCases.png" />
+    <RadzenCard Style="width: 45%;display: flex;flex-direction: column;gap:5%">
+        <RadzenText Style="font-size: 36px;color:#000000;font-weight: 700" >Testing</RadzenText>
         
-    <TestCategory HeadText="Unit tests" Category="UnitTests"
-                  DescriptionText="Are you very interested in learning how to complete unit tests? 
-                Then you should review and take tests from this category"
-        ImagePath="./assets/images/preview-unitTesting.png" />
+        <RadzenText Style="font-size: 28px; font-weight: 300; color: #000000">
+            Are you very interested in learning how to do testing and qa? 
+            Then you should browse different categories of testing tasks we provide for
+            learning testing. Start your journey today by exploring our trainings
+        </RadzenText>
+        
+        <RadzenButton Click=@(() => NavigationManager.NavigateTo("/categories"))
+            Style="color: #000000; border: 1px solid #000000; margin-top: 20px; font-size: 22px;
+                             font-weight: 400;border-radius: 20px;background-color: transparent;width:319px;height:62px">
+            Browse training
+        </RadzenButton>
 
+    </RadzenCard>
 </RadzenStack>
 
+<RadzenStack Orientation="Orientation.Horizontal" Style="padding: 2%; gap: 5%">
+    <RadzenCard Style="width: 45%;display: flex;flex-direction: column;gap:5%">
+        <RadzenText Style="font-size: 36px;color:#000000;font-weight: 700">Requirements Analysis</RadzenText>
 
+        <RadzenText Style="font-size: 28px; font-weight: 300; color: #000000">
+            Are you very interested in learning how to do testing and qa? 
+            Then you should browse different categories of testing tasks we provide for learning testing.
+            Start your journey today by exploring our trainings
+        </RadzenText>
+
+        <RadzenButton Disabled="true" Style="color: #000000; border: 1px solid #000000; margin-top: 20px; font-size: 22px;
+                             font-weight: 400;border-radius: 20px;background-color: transparent;width:319px;height:62px">
+            Browse training
+        </RadzenButton>
+
+    </RadzenCard>
+
+    <RadzenImage Style="width: 45%; height: auto; border-radius: 40px" Path="./assets/images/req-analytics.png"/>
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" Style="padding: 2%;gap:5%">
+    <RadzenImage Style="width:45%;height:auto;border-radius: 40px" Path="./assets/images/software-development.png" />
+
+    <RadzenCard Style="width: 45%;display: flex;flex-direction: column;gap:5%">
+        <RadzenText Style="font-size: 36px;color:#000000;font-weight: 700">Software Design</RadzenText>
+
+        <RadzenText Style="font-size: 28px; font-weight: 300; color: #000000">
+            Are you very interested in learning how to do testing and qa?
+            Then you should browse different categories of testing tasks we provide for
+            learning testing. Start your journey today by exploring our trainings
+        </RadzenText>
+
+        <RadzenButton Disabled="true" Style="color: #000000; border: 1px solid #000000; margin-top: 20px; font-size: 22px;
+                             font-weight: 400;border-radius: 20px;background-color: transparent;width:319px;height:62px">
+            Browse training
+        </RadzenButton>
+
+    </RadzenCard>
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" Style="padding: 2%; gap: 5%">
+    <RadzenCard Style="width: 45%;display: flex;flex-direction: column;gap:5%">
+        <RadzenText Style="font-size: 36px;color:#000000;font-weight: 700">Software Modelling</RadzenText>
+
+        <RadzenText Style="font-size: 28px; font-weight: 300; color: #000000">
+            Are you very interested in learning how to do testing and qa?
+            Then you should browse different categories of testing tasks we provide for learning testing.
+            Start your journey today by exploring our trainings
+        </RadzenText>
+
+        <RadzenButton Disabled="true" Style="color: #000000; border: 1px solid #000000; margin-top: 20px; font-size: 22px;
+                             font-weight: 400;border-radius: 20px;background-color: transparent;width:319px;height:62px">
+            Browse training
+        </RadzenButton>
+
+    </RadzenCard>
+
+    <RadzenImage Style="width: 45%; height: auto; border-radius: 40px" Path="./assets/images/software-modelling.png" />
+</RadzenStack>
+
+<RadzenStack Orientation="Orientation.Horizontal" Style="padding: 2%;gap:5%">
+    <RadzenImage Style="width:45%;height:auto;border-radius: 40px" Path="./assets/images/software-development.png" />
+
+    <RadzenCard Style="width: 45%;display: flex;flex-direction: column;gap:5%">
+        <RadzenText Style="font-size: 36px;color:#000000;font-weight: 700">Software Development</RadzenText>
+
+        <RadzenText Style="font-size: 28px; font-weight: 300; color: #000000">
+            Are you very interested in learning how to do testing and qa?
+            Then you should browse different categories of testing tasks we provide for
+            learning testing. Start your journey today by exploring our trainings
+        </RadzenText>
+
+        <RadzenButton Disabled="true" Style="color: #000000; border: 1px solid #000000; margin-top: 20px; font-size: 22px;
+                             font-weight: 400;border-radius: 20px;background-color: transparent;width:319px;height:62px">
+            Browse training
+        </RadzenButton>
+
+    </RadzenCard>
+</RadzenStack>
 
 @code {
 

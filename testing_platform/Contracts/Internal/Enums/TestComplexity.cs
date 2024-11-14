@@ -2,7 +2,7 @@
 
 public enum TestComplexity
 {
-    Easy,
+    Easy = 1,
     Medium,
-    Hard
+    Hard,
 }

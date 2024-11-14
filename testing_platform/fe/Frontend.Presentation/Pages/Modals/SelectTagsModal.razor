@@ -1,0 +1,57 @@
+﻿@using Frontend.Presentation.Services
+@using Frontend.Presentation.Pages.Components
+@inject TestPreviewService TestPreviewService
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+
+<RadzenCard Style="display: flex;flex-direction: column;justify-content: center;width: 100%;">
+    
+    <RadzenStack Style="width: 100%" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+        <RadzenButton Icon="close" Click="() => DialogService.Close()"
+                      IconColor="#000000" Style="background-color: transparent; box-shadow: none"/>
+    </RadzenStack>
+
+    <RadzenText Style="font-size:32px;font-weight: 500;text-align: center">What are you interested in?</RadzenText>
+    <RadzenText Style="font-size:20px;font-weight: 300;color:#646464;text-align: center">Select tags for better recommendations</RadzenText>
+    
+    <div class="tag-preview-container">
+        @foreach (var item in _tags)
+        {
+            <div class="tag-preview-item">
+                <TagPicker Caption=@item  />
+            </div>
+        }
+    </div>
+    
+    <RadzenStack AlignItems="AlignItems.Center">
+        <RadzenButton Style="color:#ffffff;background-color: #4B8DF1;width:265px;height:49px" Click="ChangeTads">Done</RadzenButton>
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+
+    private List<string> _tags = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _tags = (await TestPreviewService.GetTagsList(10000, 0, null)).Data;
+        _tags.Add("Tag6");
+        _tags.Add("Tag7");
+        _tags.Add("Tag8");
+        _tags.Add("Tag9");
+        _tags.Add("Tag10");
+    }
+
+    private void ChangeTads()
+    {
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success, 
+                Summary = "Tags has been updated"
+            });
+
+        DialogService.Close();
+    }
+
+}

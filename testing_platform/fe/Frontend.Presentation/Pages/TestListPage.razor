@@ -11,46 +11,44 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="20px">
-
-    <RadzenDropDown TValue="string" Placeholder="Categoty" @bind-Value="_category"
-                    Data=@(Enum.GetNames(typeof(Contracts.APICommunication.Enums.TestCategory)).ToList())
-                    Change="RefreshDataStateAsync"/>
-
-    <RadzenDropDown TValue="string" Placeholder="Difficulty" @bind-Value="_difficulty"
-                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
-                    Change="RefreshDataStateAsync"/>
-
     <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Tags" @bind-Value="_tags" LoadData="LoadTags" 
                     AllowVirtualization="true" Count=@_tagCount AllowFiltering="true" Data=@_tagsData
                     Change="RefreshDataStateAsync"/>
 
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Access" @bind-Value="_access"
+                    Data=@(Enum.GetNames(typeof(TestAccess)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Status" @bind-Value="_status"
+                    Data=@(Enum.GetNames(typeof(TestStatus)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Complexity" @bind-Value="_difficulty"
+                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenTextBox Placeholder="Search..." @bind-Value="_search" />
+
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
-    <RadzenToggleButton Text="Completed" Icon="check" IconColor=@(_completedFilter ? "#fff" : "#000" ) 
-                        Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(async () => { _completedFilter = !_completedFilter; await RefreshDataStateAsync(); })
-                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Success"
-                        Style="border:1px solid #000;"/>
+    <RadzenDatePicker TValue="DateOnly" @bind-Value="_dateOfTest" Placeholder="Date of test"/>
     
+    <RadzenTextBox></RadzenTextBox>
+    
+    <RadzenDropDown TValue="string" Multiple="false" Placeholder="Sort by" @bind-Value="_sortBy"
+                    Data=@(Enum.GetNames(typeof(TestSortBy)).ToList())
+                    Change="RefreshDataStateAsync" />
+
     <RadzenToggleButton Text="Favourite" Icon="favorite" IconColor=@(_favouriteFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
                         Click=@(async () => { _favouriteFilter = !_favouriteFilter; await RefreshDataStateAsync(); })
                         ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Danger"
                         Style="border:1px solid #000;" />
     
-    <RadzenToggleButton Text="Premium" Icon="star" IconColor=@(_premiumFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(async () => { _premiumFilter = !_premiumFilter; await RefreshDataStateAsync(); })
-                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Secondary" 
-                        Style="border:1px solid #000;" />
+    <RadzenButton Style="background-color: transparent;border:1px solid #000000;color:#000000" Text="Reset filters" />
 </RadzenStack>
 
-<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="15px" Style="margin-top: 10px">
-    <RadzenButton Variant="Variant.Text" Text="Order by date" Icon=@(_orderDateDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
-                  Click="OnDateSortingChanged" IconColor="#000" Style="color:#000000" />
 
-    <RadzenButton Variant="Variant.Text" Text="Order by duration" Icon=@(_orderDurationDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
-                  Click="OnDurationSortingChanged" IconColor="#000" Style="color: #000000" />
-</RadzenStack>
 
 <div class="test-preview-container">
     @foreach (var item in _previewModels)
@@ -63,19 +61,23 @@
 
 @code {
 
-    private bool _completedFilter;
-    private bool _favouriteFilter;
-    private bool _premiumFilter;
-
-    private string _category = null!;
-    private string _difficulty = null!;
+    private List<string> _difficulty = null!;
     private List<string> _tags = null!;
+    private List<string> _access = null!;
+    private List<string> _status = null!;
+    private string _search = null!;
+    private DateOnly _dateOfTest;
+    private string _sortBy = null!;
 
     private bool _orderByDate = false;
     private bool _orderByDuration = false;
     private bool _orderDateDirectionAsc = false;
     private bool _orderDurationDirectionAsc = false;
+    private bool _completedFilter;
+    private bool _favouriteFilter;
+    private bool _premiumFilter;
 
+    private string _category = null!;
     private List<TestPreviewModel> _previewModels = [];
 
     private List<string> _tagsData = [];
@@ -85,7 +87,7 @@
     protected override async Task OnInitializedAsync()
     {
         _category = LocalStorage.GetItem<string>("testCategory");
-        _previewModels = await LoadDataAsync();
+        // _previewModels = await LoadDataAsync();
         await LoadTags(new LoadDataArgs() { Top = 10 });
     }
 
@@ -114,7 +116,7 @@
         StateHasChanged();
     }
 
-    private async Task<List<TestPreviewModel>> LoadDataAsync()
+    /*private async Task<List<TestPreviewModel>> LoadDataAsync()
     {
 
         var request = new TestListRequest
@@ -142,11 +144,11 @@
         var tests = await TestPreviewService.GetPagedTestList(request);
 
         return tests;
-    }
+    }*/
 
     private async Task RefreshDataStateAsync()
     {
-        _previewModels = await LoadDataAsync();
+        // _previewModels = await LoadDataAsync();
         StateHasChanged();
     }
 

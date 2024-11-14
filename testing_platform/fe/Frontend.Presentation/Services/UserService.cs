@@ -15,7 +15,6 @@ public class UserService
     {
         _httpClient = httpClient;
         _authService = authService;
-        _httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
     }
 
     public async Task<ShortProfileUserDto> GetShortUserProfileAsync()
