@@ -18,7 +18,6 @@ public class AuthService
     {
         _httpClient = httpClient;
         _jsRuntime = jsRuntime;
-        _httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
     }
 
     public async Task<bool> LoginAsync(string username, string password)

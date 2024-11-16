@@ -10,7 +10,7 @@ public class Test
     public byte DurationInMinutes { get; set; }
     public DateOnly UploadDate { get; set; }
     public TestCategory Category { get; set; }
-    public TestDifficulty Difficulty { get; set; }
+    public TestComplexity Complexity { get; set; }
     public bool IsPremium { get; set; }
 
     public virtual List<TestTags> TestTags { get; set; }

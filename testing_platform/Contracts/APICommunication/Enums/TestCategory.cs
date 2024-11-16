@@ -3,6 +3,8 @@
 public enum TestCategory
 {
     BugReports = 1,
-    TestCases = 2,
-    UnitTests = 3
+    TestCases,
+    UnitTests,
+    AutomatedTests,
+    CheckList,
 }

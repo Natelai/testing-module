@@ -1,56 +1,56 @@
 ﻿@page "/tests"
-
 @using Contracts.APICommunication
 @using Contracts.APICommunication.Enums
 @using Contracts.Internal
-@using Contracts.Internal.Enums
-@using Frontend.Presentation.Pages.Components
 @using Frontend.Presentation.Services
-@using TestCategory = Frontend.Presentation.Pages.Components.TestCategory
+@using Frontend.Presentation.Pages.Components
+
 @inject TestPreviewService TestPreviewService
 @inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="20px">
-
-    <RadzenDropDown TValue="string" Placeholder="Categoty" @bind-Value="_category"
-                    Data=@(Enum.GetNames(typeof(Contracts.APICommunication.Enums.TestCategory)).ToList())
-                    Change="RefreshDataStateAsync"/>
-
-    <RadzenDropDown TValue="string" Placeholder="Difficulty" @bind-Value="_difficulty"
-                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
-                    Change="RefreshDataStateAsync"/>
-
     <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Tags" @bind-Value="_tags" LoadData="LoadTags" 
                     AllowVirtualization="true" Count=@_tagCount AllowFiltering="true" Data=@_tagsData
                     Change="RefreshDataStateAsync"/>
 
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Access" @bind-Value="_access"
+                    Data=@(Enum.GetNames(typeof(TestAccess)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Status" @bind-Value="_status"
+                    Data=@(Enum.GetNames(typeof(TestStatus)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenDropDown TValue="List<string>" Multiple="true" Placeholder="Complexity" @bind-Value="_difficulty"
+                    Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
+                    Change="RefreshDataStateAsync" />
+    
+    <RadzenTextBox Placeholder="Search..." @bind-Value="_search" />
+
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
-    <RadzenToggleButton Text="Completed" Icon="check" IconColor=@(_completedFilter ? "#fff" : "#000" ) 
-                        Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(async () => { _completedFilter = !_completedFilter; await RefreshDataStateAsync(); })
-                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Success"
-                        Style="border:1px solid #000;"/>
+    <RadzenDatePicker TValue="DateOnly" @bind-Value="_dateOfTest" Placeholder="Date of test"/>
     
+    <RadzenStack Style="margin: 0 10px;">
+        <RadzenText Text=@($"Duration: {_maxDuration}") Style="margin:unset" />
+        <RadzenSlider Min="0" Max="90" TValue="int" @bind-Value=@_maxDuration Step="10"/>
+    </RadzenStack>
+
+    
+    <RadzenDropDown TValue="string" Multiple="false" Placeholder="Sort by" @bind-Value="_sortBy"
+                    Data=@(Enum.GetNames(typeof(TestSortBy)).ToList())
+                    Change="RefreshDataStateAsync" />
+
     <RadzenToggleButton Text="Favourite" Icon="favorite" IconColor=@(_favouriteFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
                         Click=@(async () => { _favouriteFilter = !_favouriteFilter; await RefreshDataStateAsync(); })
                         ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Danger"
                         Style="border:1px solid #000;" />
     
-    <RadzenToggleButton Text="Premium" Icon="star" IconColor=@(_premiumFilter ? "#fff" : "#000" ) Shade="Shade.Default" ToggleShade="Shade.Default"
-                        Click=@(async () => { _premiumFilter = !_premiumFilter; await RefreshDataStateAsync(); })
-                        ButtonStyle="ButtonStyle.Base" ToggleButtonStyle="ButtonStyle.Secondary" 
-                        Style="border:1px solid #000;" />
+    <RadzenButton Style="background-color: transparent;border:1px solid #000000;color:#000000" Text="Reset filters" />
 </RadzenStack>
 
-<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="15px" Style="margin-top: 10px">
-    <RadzenButton Variant="Variant.Text" Text="Order by date" Icon=@(_orderDateDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
-                  Click="OnDateSortingChanged" IconColor="#000" Style="color:#000000" />
 
-    <RadzenButton Variant="Variant.Text" Text="Order by duration" Icon=@(_orderDurationDirectionAsc ? "keyboard_arrow_down" : "keyboard_arrow_up")
-                  Click="OnDurationSortingChanged" IconColor="#000" Style="color: #000000" />
-</RadzenStack>
 
 <div class="test-preview-container">
     @foreach (var item in _previewModels)
@@ -67,21 +67,20 @@
 
 @code {
 
+
+
+    private List<string> _difficulty = null!;
+    private List<string> _tags = null!;
+    private List<string> _access = null!;
+    private List<string> _status = null!;
+    private string _search = null!;
+    private DateOnly _dateOfTest;
+    private string _sortBy = null!;
+    private bool _favouriteFilter;
+    private int _maxDuration = 90;
     private const int PAGE_SIZE = 20;
 
-    private bool _completedFilter;
-    private bool _favouriteFilter;
-    private bool _premiumFilter;
-
     private string _category = null!;
-    private string _difficulty = null!;
-    private List<string> _tags = null!;
-
-    private bool _orderByDate = false;
-    private bool _orderByDuration = false;
-    private bool _orderDateDirectionAsc = false;
-    private bool _orderDurationDirectionAsc = false;
-
     private List<TestPreviewModel> _previewModels = [];
 
     private List<string> _tagsData = [];
@@ -134,19 +133,47 @@
                 Offset = _pageOffset,
                 Limit = _pageLimit
             },
-            TestListOrdering = new TestListOrderingDto
-            {
-                OrderByDate = _orderByDate,
-                OrderByDuration = _orderByDuration,
-                OrderInAscOrder = _orderByDate ? _orderDateDirectionAsc : _orderDurationDirectionAsc
-            },
-            TestCategory = Enum.TryParse<Contracts.APICommunication.Enums.TestCategory>(_category, true, out var categoryEnum) 
-                ? categoryEnum : Contracts.APICommunication.Enums.TestCategory.BugReports,
-            TestDifficulty = Enum.TryParse<TestDifficulty>(_difficulty, true, out var difficultyEnum) ? difficultyEnum : null,
-            Tags = _tags,
-            IsCompleted = _completedFilter,
+            TestCategory = Enum.TryParse<Contracts.APICommunication.Enums.TestCategory>(_category, true, out var categoryEnum)
+                ? categoryEnum
+                : Contracts.APICommunication.Enums.TestCategory.BugReports,
+
+            Difficulties = _difficulty?
+                .Select(x => Enum.TryParse<TestComplexity>(x, true, out var difficultyEnum)
+                    ? difficultyEnum
+                    : (TestComplexity?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestComplexity>(),
+
+            Tags = _tags ?? new List<string>(),
+
             IsFavourite = _favouriteFilter,
-            IsPremium = _premiumFilter,
+
+            Accesses = _access?
+                .Select(x => Enum.TryParse<TestAccess>(x, true, out var accessEnum)
+                    ? accessEnum
+                    : (TestAccess?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestAccess>(),
+
+            DateOfTest = _dateOfTest,
+
+            MaxDuration = _maxDuration,
+
+            Search = _search ?? string.Empty,
+
+            TestSortBy = Enum.TryParse<Contracts.APICommunication.Enums.TestSortBy>(_sortBy, true, out var sortEnum)
+                ? sortEnum
+                : Contracts.APICommunication.Enums.TestSortBy.Longest,
+
+            TestStatuses = _status?
+                .Select(x => Enum.TryParse<TestStatus>(x, true, out var statusEnum)
+                    ? statusEnum
+                    : (TestStatus?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestStatus>(),
         };
 
         var tests = await TestPreviewService.GetPagedTestList(request);
@@ -159,24 +186,6 @@
     {
         _previewModels = await LoadDataAsync();
         StateHasChanged();
-    }
-
-    private async Task OnDateSortingChanged()
-    {
-        _orderByDate = true;
-        _orderByDuration = false;
-        _orderDateDirectionAsc = !_orderDateDirectionAsc;
-
-        await RefreshDataStateAsync();
-    }
-
-    private async Task OnDurationSortingChanged()
-    {
-        _orderByDuration = true;
-        _orderByDate = false;
-        _orderDurationDirectionAsc = !_orderDurationDirectionAsc;
-
-        await RefreshDataStateAsync();
     }
 
     private async Task PageChanged(PagerEventArgs args)

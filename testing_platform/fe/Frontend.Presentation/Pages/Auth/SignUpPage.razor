@@ -23,6 +23,7 @@
                 <RadzenText Text="Email*"></RadzenText>
                 <RadzenTextBox @bind-Value="_signupModel.Email" Name="Email"/>
                 <RadzenRequiredValidator Component="Email" Text="Email is required"/>
+                <RadzenEmailValidator Component="Email" Text="Please, provide valid email" />
             </RadzenStack>
 
             <RadzenStack Style="gap:5px;width:90%">

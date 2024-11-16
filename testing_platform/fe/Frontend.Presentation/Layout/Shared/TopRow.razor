@@ -9,8 +9,8 @@
         justify-content: space-between !important; background-color: #8AABD0;padding:0;padding-left:10px">
     
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
-        <RadzenText Text="VLSE" 
-                    Style="margin: unset;display: flex;align-items: center;font-size: 28px;color: #000;font-weight: 700;"/>
+        <RadzenText Text="VLSE" @onclick=@(() => NavigationManager.NavigateTo("/")) 
+                    Style="margin: unset;display: flex;align-items: center;font-size: 28px;color: #000;font-weight: 700;cursor: pointer"/>
     </RadzenStack>
     
     <RadzenStack Orientation="Orientation.Horizontal" Gap="20px">

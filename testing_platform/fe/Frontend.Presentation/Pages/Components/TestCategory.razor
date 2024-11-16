@@ -2,8 +2,8 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenCard
-    Style="width: 32%; background-color: #F0F0F0; gap: 10px; display: flex; justify-content: center;
-        flex-direction: column;border-radius: 30px">
+    Style="min-width: 400px; min-height:500px; background-color: #F0F0F0; gap: 10px; display: flex; justify-content: center;
+        flex-direction: column;border-radius: 30px;">
     
     <div style="width: 100%; display: flex; align-items: center;justify-content: center">
         <RadzenImage Path="@ImagePath"
@@ -13,8 +13,8 @@
     <RadzenText Text="@HeadText"
                 Style="font-size: 26px; font-weight: 700; color: #000;"/>
 
-    <RadzenText Text="@DescriptionText"
-                Style="margin: 20px 0; font-size: 20px"/>
+    <RadzenText Text="@DescriptionText" 
+                Style="margin: 20px 0; font-size: 20px;white-space:normal;" />
 
     <RadzenButton Text="To tests" Click=@(() => SaveCategoryAndNavigate())
                   Style="width: 45%;height: 45px;color: #000;font-size: 16px;font-weight: 600;border-radius: 30px;

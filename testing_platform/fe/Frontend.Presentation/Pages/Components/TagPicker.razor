@@ -1,0 +1,18 @@
+﻿<RadzenCard Style=@( (_isSelected ? "background-color: #47B2FF;" : "background-color: #538CFF;")
+            + "width: 180px; height: 180px; display: flex; flex-direction:column; justify-content: space-between")
+            @onclick=@(() => _isSelected = !_isSelected)>
+
+    <RadzenStack AlignItems="AlignItems.End">
+        <RadzenCheckBox @bind-Value="_isSelected" Visible="_isSelected"/>
+    </RadzenStack>
+
+    <RadzenText Style="color: #ffffff; font-size: 24px;">@Caption</RadzenText>
+</RadzenCard>
+
+@code {
+
+    [Parameter]
+    public required string Caption { get; set; }
+
+    private bool _isSelected = false;
+}

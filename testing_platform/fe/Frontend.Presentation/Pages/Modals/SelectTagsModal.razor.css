@@ -1,0 +1,10 @@
+﻿.tag-preview-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.tag-preview-item {
+
+}

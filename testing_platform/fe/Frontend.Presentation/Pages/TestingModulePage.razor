@@ -1,0 +1,36 @@
+﻿@page "/categories"
+@using Frontend.Presentation.Pages.Components
+
+<div style="width: 95vw; margin-top: 50px; padding: 15px; overflow-x: auto; display: flex; align-items: center; 
+            justify-content: space-between; gap: 2%;white-space: nowrap;">
+    
+    <TestCategory 
+        HeadText="Bug reports" Category="BugReports"
+        DescriptionText="Are you really interested in learning how to file bug reports?
+        Then you should review and take tests from this category"
+        ImagePath="./assets/images/preview-bugReports.png" />
+    
+    <TestCategory HeadText="Test cases" Category="TestCases"
+                  DescriptionText="Are you really interested in learning how to fill out test cases? 
+                Then you should review and take tests from this category"
+                  ImagePath="./assets/images/preview-testCases.png" />
+    
+    <TestCategory HeadText="Automated Tests" Category="AutomatedTests"
+                  DescriptionText="Are you very interested in learning how to fill in bug reports? 
+                        Then you should take tests from this category."
+                  ImagePath="./assets/images/preview-bugReports.png" />
+                  
+    <TestCategory HeadText="Check lists" Category="CheckList"
+                  DescriptionText="Are you very interested in learning how to fill in bug reports?
+                        Then you should take tests from this category."
+                  ImagePath="./assets/images/preview-testCases.png" />
+
+    <TestCategory HeadText="Unit tests" Category="UnitTests"
+                  DescriptionText="Are you very interested in learning how to complete unit tests? 
+                Then you should review and take tests from this category"
+                  ImagePath="./assets/images/preview-unitTesting.png" />
+</div>
+
+@code {
+
+}

@@ -4,12 +4,15 @@ namespace Contracts.APICommunication;
 
 public class TestListRequest
 {
-    public PagedRequest PagedRequest { get; set; }
-    public TestListOrderingDto TestListOrdering { get; set; }
-    public TestCategory TestCategory { get; set; }
-    public TestDifficulty? TestDifficulty { get; set; }
+    public List<TestComplexity> Difficulties { get; set; }
     public List<string>? Tags { get; set; }
-    public bool IsCompleted { get; set; }
+    public List<TestAccess> Accesses { get; set; }
+    public List<TestStatus> TestStatuses { get; set; }
+    public string Search { get; set; }
+    public DateOnly DateOfTest { get; set; }
+    public int MaxDuration { get; set; }
+    public TestSortBy TestSortBy { get; set; }
     public bool IsFavourite { get; set; }
-    public bool IsPremium { get; set; }
+    public TestCategory TestCategory { get; set; }
+    public PagedRequest PagedRequest { get; set; }
 }

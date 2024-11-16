@@ -25,7 +25,8 @@
         Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
         Change password
     </RadzenButton>
-    <RadzenButton Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
+    <RadzenButton Click="SnowEditTagsDialogAsync"
+        Style="border: 1px solid #000000; border-radius: 10px; width: 23%; height: 70px;background-color: transparent;color: #000000">
         Edit tags
     </RadzenButton>
     <RadzenButton Click=@(() => NavigationManager.NavigateTo("/analytics"))
@@ -70,6 +71,20 @@
                 Resizable = false,
                 Draggable = true,
                 Width = "500px",
+                ShowClose = true,
+            });
+    }
+
+    private async Task SnowEditTagsDialogAsync()
+    {
+        await DialogService.OpenAsync<SelectTagsModal>("",
+            new Dictionary<string, object>(),
+            new DialogOptions()
+            {
+                ShowTitle = false,
+                Resizable = false,
+                Draggable = true,
+                Width = "1100px",
                 ShowClose = true,
             });
     }

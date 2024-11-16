@@ -13,7 +13,6 @@ public class TestPreviewService
     public TestPreviewService(HttpClient httpClient, ApiSettings apiSettings, AuthService authService)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri(apiSettings.BaseUrl);
         _authService = authService;
     }
 
@@ -36,7 +35,9 @@ public class TestPreviewService
 
     public async Task<TagsListResponse> GetTagsList(int limit, int offset, string? filter)
     {
-        _httpClient.DefaultRequestHeaders.Authorization =
+        var httpclient = _httpClient;
+
+        httpclient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", await _authService.GetToken());
 
         var query = new Dictionary<string, string>
@@ -51,7 +52,7 @@ public class TestPreviewService
         }
 
         var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={kvp.Value}"));
-        var response = await _httpClient.GetAsync($"api/tests/tags?{queryString}");
+        var response = await httpclient.GetAsync($"api/tests/tags?{queryString}");
 
         if (response.IsSuccessStatusCode)
         {
