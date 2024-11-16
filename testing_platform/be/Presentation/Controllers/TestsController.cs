@@ -21,7 +21,7 @@ public class TestsController(AppDbContext context) : ControllerBase
     private readonly AppDbContext _context = context;
 
     [HttpPost("list")]
-    public async Task<ActionResult<List<TestPreviewDto>>> GetPagedTestList([FromBody] TestListRequest request, CancellationToken ct)
+    public async Task<ActionResult<TestListResponse>> GetPagedTestList([FromBody] TestListRequest request, CancellationToken ct)
     {
         var user = await GetUserAsync(ct);
         var query = _context.Tests.AsQueryable();
@@ -41,10 +41,20 @@ public class TestsController(AppDbContext context) : ControllerBase
         query = await ApplyStatuses(query, request.TestStatuses, user.Id, ct);
 
         query = ApplyOrdering(query, request.TestSortBy);
+
+        var count = await query.CountAsync(ct);
+        
         query = query.ApplyPagination(request.PagedRequest);
 
         var result = await ProjectToTestPreviewDto(query, user.Id, ct);
-        return Ok(result);
+
+        var rsp = new TestListResponse
+        {
+            Data = result,
+            TotalCount = count,
+        };
+
+        return Ok(rsp);
     }
 
     [HttpGet("tags")]
