@@ -61,7 +61,13 @@
     }
 </div>
 
+<RadzenPager ShowPagingSummary="true" AlwaysVisible="true"
+             HorizontalAlign="HorizontalAlign.Right" Count="_totalCount" 
+             PageSize="@PAGE_SIZE" PageNumbersCount="5" PageChanged="@PageChanged" />
+
 @code {
+
+    private const int PAGE_SIZE = 20;
 
     private bool _completedFilter;
     private bool _favouriteFilter;
@@ -81,6 +87,10 @@
     private List<string> _tagsData = [];
     private string _lastTagFilter = null!;
     private int _tagCount;
+
+    private int _pageLimit = PAGE_SIZE;
+    private int _pageOffset = 0;
+    private int _totalCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,8 +131,8 @@
         {
             PagedRequest = new PagedRequest
             {
-                Offset = 0,
-                Limit = 20
+                Offset = _pageOffset,
+                Limit = _pageLimit
             },
             TestListOrdering = new TestListOrderingDto
             {
@@ -140,8 +150,9 @@
         };
 
         var tests = await TestPreviewService.GetPagedTestList(request);
+        _totalCount = tests.TotalCount;
 
-        return tests;
+        return MapToTestPreviewModels(tests.Data);
     }
 
     private async Task RefreshDataStateAsync()
@@ -166,5 +177,34 @@
         _orderDurationDirectionAsc = !_orderDurationDirectionAsc;
 
         await RefreshDataStateAsync();
+    }
+
+    private async Task PageChanged(PagerEventArgs args)
+    {
+        _pageOffset = args.Skip;
+        _previewModels = await LoadDataAsync();
+    }
+
+    private List<TestPreviewModel> MapToTestPreviewModels(List<TestPreviewDto> dtos)
+    {
+        var models = new List<TestPreviewModel>();
+
+        foreach (var dto in dtos)
+        {
+            models.Add(new TestPreviewModel
+                {
+                    IsPremium = dto.IsPremium,
+                    Caption = dto.Caption,
+                    UploadDate = dto.UploadDate,
+                    DurationInMinutes = dto.DurationInMinutes,
+                    Category = dto.Category,
+                    Complexity = dto.Complexity,
+                    Tags = dto.Tags,
+                    IsCompleted = dto.IsCompleted,
+                    IsFavourite = dto.IsFavourite
+                });
+        }
+
+        return models;
     }
 }

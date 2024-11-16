@@ -17,7 +17,7 @@ public class TestPreviewService
         _authService = authService;
     }
 
-    public async Task<List<TestPreviewModel>> GetPagedTestList(TestListRequest request)
+    public async Task<TestListResponse> GetPagedTestList(TestListRequest request)
     {
         _httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", await _authService.GetToken());
@@ -26,8 +26,9 @@ public class TestPreviewService
 
         if (response.IsSuccessStatusCode)
         {
-            var testPreviewDtos = await response.Content.ReadFromJsonAsync<List<TestPreviewDto>>();
-            return MapToTestPreviewModels(testPreviewDtos);
+            var rsp = new TestListResponse();
+
+            return await response.Content.ReadFromJsonAsync<TestListResponse>();
         }
 
         throw new HttpRequestException("Failed to load test list.");
@@ -60,26 +61,5 @@ public class TestPreviewService
         throw new HttpRequestException("Failed to load tags list.");
     }
 
-    private List<TestPreviewModel> MapToTestPreviewModels(List<TestPreviewDto> dtos)
-    {
-        var models = new List<TestPreviewModel>();
-
-        foreach (var dto in dtos)
-        {
-            models.Add(new TestPreviewModel
-            {
-                IsPremium = dto.IsPremium,
-                Caption = dto.Caption,
-                UploadDate = dto.UploadDate,
-                DurationInMinutes = dto.DurationInMinutes,
-                Category = dto.Category,
-                Complexity = dto.Complexity,
-                Tags = dto.Tags,
-                IsCompleted = dto.IsCompleted,
-                IsFavourite = dto.IsFavourite
-            });
-        }
-
-        return models;
-    }
+    
 }
