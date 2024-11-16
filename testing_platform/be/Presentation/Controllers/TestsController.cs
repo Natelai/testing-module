@@ -27,12 +27,20 @@ public class TestsController(AppDbContext context) : ControllerBase
         var query = _context.Tests.AsQueryable();
 
         query = ApplyCategoryFilter(query, request.TestCategory);
-        query = ApplyPremiumFilter(query, request.IsPremium);
         query = await ApplyFavouriteFilterAsync(query, request.IsFavourite, user.Id, ct);
-        query = await ApplyCompletedFilterAsync(query, request.IsCompleted, user.Id, ct);
-        query = ApplyDifficultyFilter(query, request.TestDifficulty);
+        query = ApplyDifficultyFilter(query, request.Difficulties);
         query = ApplyTagFilter(query, request.Tags);
-        query = ApplyOrdering(query, request.TestListOrdering);
+        query = query.Where(x => x.DurationInMinutes <= request.MaxDuration);
+
+        if (request.DateOfTest != DateOnly.MinValue)
+        {
+            query = query.Where(x => x.UploadDate == request.DateOfTest);
+        }
+
+        query = ApplyAccesses(query, request.Accesses);
+        query = await ApplyStatuses(query, request.TestStatuses, user.Id, ct);
+
+        query = ApplyOrdering(query, request.TestSortBy);
         query = query.ApplyPagination(request.PagedRequest);
 
         var result = await ProjectToTestPreviewDto(query, user.Id, ct);
@@ -96,30 +104,60 @@ public class TestsController(AppDbContext context) : ControllerBase
         return query.Where(t => completedTestIds.Contains(t.Id));
     }
 
-    private IQueryable<Test> ApplyDifficultyFilter(IQueryable<Test> query, TestDifficulty? difficulty) =>
-        difficulty.HasValue ? query.Where(t => t.Difficulty == difficulty) : query;
+    private IQueryable<Test> ApplyDifficultyFilter(IQueryable<Test> query, List<TestComplexity>? difficulty) =>
+        difficulty.Count > 0 ? query.Where(t => difficulty.Contains(t.Complexity)) : query;
 
     private IQueryable<Test> ApplyTagFilter(IQueryable<Test> query, List<string> tags) =>
         tags != null && tags.Any()
             ? query.Where(t => t.TestTags.Any(tt => tags.Contains(tt.Tag.Name)))
             : query;
 
-    private IQueryable<Test> ApplyOrdering(IQueryable<Test> query, TestListOrderingDto ordering) =>
+    private IQueryable<Test> ApplyOrdering(IQueryable<Test> query, TestSortBy ordering) =>
         ordering switch
         {
-            { OrderByDate: true, OrderInAscOrder: true } => query.OrderBy(t => t.UploadDate),
-            { OrderByDate: true, OrderInAscOrder: false } => query.OrderByDescending(t => t.UploadDate),
-            { OrderByDuration: true, OrderInAscOrder: true } => query.OrderBy(t => t.DurationInMinutes),
-            { OrderByDuration: true, OrderInAscOrder: false } => query.OrderByDescending(t => t.DurationInMinutes),
+            TestSortBy.Newest => query.OrderBy(t => t.UploadDate),
+            TestSortBy.Oldest => query.OrderByDescending(t => t.UploadDate),
+            TestSortBy.Shortest => query.OrderBy(t => t.DurationInMinutes),
+            TestSortBy.Longest => query.OrderByDescending(t => t.DurationInMinutes),
             _ => query
         };
+
+    private IQueryable<Test> ApplyAccesses(IQueryable<Test> query, List<TestAccess> ordering)
+    {
+        if (ordering.Count == 2)
+        {
+            return query;
+        }
+
+        if (ordering.Contains(TestAccess.Free))
+        {
+            query = query.Where(x => x.IsPremium == false);
+        }
+
+        if (ordering.Contains(TestAccess.Premium))
+        {
+            query = query.Where(x => x.IsPremium == true);
+        }
+
+        return query;
+    }
+
+    private async Task<IQueryable<Test>> ApplyStatuses(IQueryable<Test> query, List<TestStatus> ordering, int userId, CancellationToken ct)
+    {
+        if (ordering.Contains(TestStatus.Completed))
+        {
+            query = await ApplyCompletedFilterAsync(query, true, userId, ct);
+        }
+
+        return query;
+    }
 
     private async Task<List<TestPreviewDto>> ProjectToTestPreviewDto(IQueryable<Test> query, int userId, CancellationToken ct) =>
         await query.Select(x => new TestPreviewDto
         {
             Category = x.Category.ToString(),
             Caption = x.Caption,
-            Complexity = x.Difficulty.ToString(),
+            Complexity = x.Complexity.ToString(),
             DurationInMinutes = x.DurationInMinutes,
             IsCompleted = _context.CompletedTests.Any(ct => ct.TestId == x.Id && ct.UserId == userId),
             IsFavourite = _context.FavouriteTests.Any(ft => ft.TestId == x.Id && ft.UserId == userId),

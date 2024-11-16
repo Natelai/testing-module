@@ -1,12 +1,10 @@
 ﻿@page "/tests"
-
 @using Contracts.APICommunication
 @using Contracts.APICommunication.Enums
 @using Contracts.Internal
-@using Contracts.Internal.Enums
-@using Frontend.Presentation.Pages.Components
 @using Frontend.Presentation.Services
-@using TestCategory = Frontend.Presentation.Pages.Components.TestCategory
+@using Frontend.Presentation.Pages.Components
+
 @inject TestPreviewService TestPreviewService
 @inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
@@ -34,7 +32,11 @@
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
     <RadzenDatePicker TValue="DateOnly" @bind-Value="_dateOfTest" Placeholder="Date of test"/>
     
-    <RadzenTextBox></RadzenTextBox>
+    <RadzenStack Style="margin: 0 10px;">
+        <RadzenText Text=@($"Duration: {_maxDuration}") Style="margin:unset" />
+        <RadzenSlider Min="0" Max="90" TValue="int" @bind-Value=@_maxDuration Step="10"/>
+    </RadzenStack>
+
     
     <RadzenDropDown TValue="string" Multiple="false" Placeholder="Sort by" @bind-Value="_sortBy"
                     Data=@(Enum.GetNames(typeof(TestSortBy)).ToList())
@@ -61,6 +63,8 @@
 
 @code {
 
+
+
     private List<string> _difficulty = null!;
     private List<string> _tags = null!;
     private List<string> _access = null!;
@@ -68,14 +72,9 @@
     private string _search = null!;
     private DateOnly _dateOfTest;
     private string _sortBy = null!;
-
-    private bool _orderByDate = false;
-    private bool _orderByDuration = false;
-    private bool _orderDateDirectionAsc = false;
-    private bool _orderDurationDirectionAsc = false;
-    private bool _completedFilter;
     private bool _favouriteFilter;
-    private bool _premiumFilter;
+    private int _maxDuration = 90;
+
 
     private string _category = null!;
     private List<TestPreviewModel> _previewModels = [];
@@ -87,7 +86,7 @@
     protected override async Task OnInitializedAsync()
     {
         _category = LocalStorage.GetItem<string>("testCategory");
-        // _previewModels = await LoadDataAsync();
+        _previewModels = await LoadDataAsync();
         await LoadTags(new LoadDataArgs() { Top = 10 });
     }
 
@@ -116,7 +115,7 @@
         StateHasChanged();
     }
 
-    /*private async Task<List<TestPreviewModel>> LoadDataAsync()
+    private async Task<List<TestPreviewModel>> LoadDataAsync()
     {
 
         var request = new TestListRequest
@@ -126,47 +125,57 @@
                 Offset = 0,
                 Limit = 20
             },
-            TestListOrdering = new TestListOrderingDto
-            {
-                OrderByDate = _orderByDate,
-                OrderByDuration = _orderByDuration,
-                OrderInAscOrder = _orderByDate ? _orderDateDirectionAsc : _orderDurationDirectionAsc
-            },
-            TestCategory = Enum.TryParse<Contracts.APICommunication.Enums.TestCategory>(_category, true, out var categoryEnum) 
-                ? categoryEnum : Contracts.APICommunication.Enums.TestCategory.BugReports,
-            TestDifficulty = Enum.TryParse<TestDifficulty>(_difficulty, true, out var difficultyEnum) ? difficultyEnum : null,
-            Tags = _tags,
-            IsCompleted = _completedFilter,
+            TestCategory = Enum.TryParse<Contracts.APICommunication.Enums.TestCategory>(_category, true, out var categoryEnum)
+                ? categoryEnum
+                : Contracts.APICommunication.Enums.TestCategory.BugReports,
+
+            Difficulties = _difficulty?
+                .Select(x => Enum.TryParse<TestComplexity>(x, true, out var difficultyEnum)
+                    ? difficultyEnum
+                    : (TestComplexity?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestComplexity>(),
+
+            Tags = _tags ?? new List<string>(),
+
             IsFavourite = _favouriteFilter,
-            IsPremium = _premiumFilter,
+
+            Accesses = _access?
+                .Select(x => Enum.TryParse<TestAccess>(x, true, out var accessEnum)
+                    ? accessEnum
+                    : (TestAccess?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestAccess>(),
+
+            DateOfTest = _dateOfTest,
+
+            MaxDuration = _maxDuration,
+
+            Search = _search ?? string.Empty,
+
+            TestSortBy = Enum.TryParse<Contracts.APICommunication.Enums.TestSortBy>(_sortBy, true, out var sortEnum)
+                ? sortEnum
+                : Contracts.APICommunication.Enums.TestSortBy.Longest,
+
+            TestStatuses = _status?
+                .Select(x => Enum.TryParse<TestStatus>(x, true, out var statusEnum)
+                    ? statusEnum
+                    : (TestStatus?)null)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .ToList() ?? new List<TestStatus>(),
         };
 
         var tests = await TestPreviewService.GetPagedTestList(request);
 
         return tests;
-    }*/
+    }
 
     private async Task RefreshDataStateAsync()
     {
-        // _previewModels = await LoadDataAsync();
+        _previewModels = await LoadDataAsync();
         StateHasChanged();
-    }
-
-    private async Task OnDateSortingChanged()
-    {
-        _orderByDate = true;
-        _orderByDuration = false;
-        _orderDateDirectionAsc = !_orderDateDirectionAsc;
-
-        await RefreshDataStateAsync();
-    }
-
-    private async Task OnDurationSortingChanged()
-    {
-        _orderByDuration = true;
-        _orderByDate = false;
-        _orderDurationDirectionAsc = !_orderDurationDirectionAsc;
-
-        await RefreshDataStateAsync();
     }
 }

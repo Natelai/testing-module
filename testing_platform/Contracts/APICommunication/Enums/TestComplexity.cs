@@ -1,4 +1,4 @@
-﻿namespace Contracts.Internal.Enums;
+﻿namespace Contracts.APICommunication.Enums;
 
 public enum TestComplexity
 {
