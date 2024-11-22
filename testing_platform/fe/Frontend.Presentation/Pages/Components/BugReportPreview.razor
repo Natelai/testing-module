@@ -1,0 +1,32 @@
+﻿
+<RadzenStack Orientation="Orientation.Horizontal" @onclick="OnClick"
+             JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.Center"
+             Style="border:1px solid #000000;padding:0 10px;margin: 15px">
+    <RadzenImage Path="./assets/images/test_preview.png" Style="width:75px;height:auto" />
+
+    <RadzenText Style="display: flex;justify-content: center;align-items: center">@($"VLSE-{Index}")</RadzenText>
+    
+    <RadzenImage Path="./assets/images/X.png" Style="width:50px;height:50px" />
+</RadzenStack>
+
+@code {
+
+    [Parameter]
+    public int Index { get; set; } 
+
+    [Parameter]
+    public int BindingValue { get; set; }
+
+    [Parameter]
+    public EventCallback<int> BindingValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback Click { get; set; }
+
+    public async void OnClick()
+    {
+        BindingValue = Index;
+        await BindingValueChanged.InvokeAsync(BindingValue);
+        await Click.InvokeAsync();
+    }
+}

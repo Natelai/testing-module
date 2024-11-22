@@ -1,0 +1,886 @@
+﻿@page "/bugreport"
+@using Frontend.Presentation.Pages.Components
+@inject DialogService DialogService
+
+@if (!CheckResults)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" Gap="0px">
+        <RadzenStack Style="padding: 10px; width: 50%" Gap="20px">
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenText>
+                    You need to carefully examine the proposed images and read their descriptions.
+                    Then, create and submit a new bug report for each image. Finally, complete the test.
+                </RadzenText>
+
+                <RadzenButton Style="background-color: green;width:80%" Click=@(() => CheckResults = !CheckResults)>
+                    Finish test
+                </RadzenButton>
+            </RadzenStack>
+
+            @if (Index == 0)
+            {
+                <RadzenCard>
+                    <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" JustifyContent="JustifyContent.Right">
+                        <RadzenText Style="display: flex;justify-content: center;align-items: center">Hint</RadzenText>
+                        <RadzenImage Path="./assets/images/Info.png" Style="width: 30px;height:30px" Click="ShowHintAsync"></RadzenImage>
+                    </RadzenStack>
+
+                    <RadzenImage Path="./assets/images/bugreport_task1.png" Style="width: 100%; height: auto">
+
+                    </RadzenImage>
+
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenButton Icon="arrow_back_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 0) Click=@(() => Index--) />
+
+                        <RadzenText Style="text-align: center">
+                            Content on the "Create issue" modal dialog fails to reflow properly when viewed in a 320 x 256 viewport,
+                            making it difficult for low-vision users to access content at higher zoom levels.
+                        </RadzenText>
+
+                        <RadzenButton Icon="arrow_forward_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 2) Click=@(() => Index++) />
+
+                    </RadzenStack>
+                </RadzenCard>
+            }
+            else if (Index == 1)
+            {
+                <RadzenCard>
+                    <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" JustifyContent="JustifyContent.Right">
+                        <RadzenText Style="display: flex;justify-content: center;align-items: center">Hint</RadzenText>
+                        <RadzenImage Path="./assets/images/Info.png" Style="width: 30px;height:30px" Click="ShowHintAsync"></RadzenImage>
+                    </RadzenStack>
+
+                    <RadzenImage Path="./assets/images/bugreport_task2.png" Style="width: 100%; height: auto">
+
+                    </RadzenImage>
+
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenButton Icon="arrow_back_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 0) Click=@(() => Index--)/>
+
+                        <RadzenText Style="text-align: center">
+                            Switching tabs from "Exemptions" to "List of Limited Accounts" in the Rate Limiting settings causes the page to
+                            go blank if there are exempted users who haven’t been rate-limited.
+                        </RadzenText>
+
+                        <RadzenButton Icon="arrow_forward_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 2) Click=@(() => Index++)/>
+
+                    </RadzenStack>
+                </RadzenCard>
+            }
+            else if (Index == 2)
+            {
+                <RadzenCard>
+                    <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" JustifyContent="JustifyContent.Right">
+                        <RadzenText Style="display: flex;justify-content: center;align-items: center">Hint</RadzenText>
+                        <RadzenImage Path="./assets/images/Info.png" Style="width: 30px;height:30px" Click="ShowHintAsync"></RadzenImage>
+                    </RadzenStack>
+
+                    <RadzenImage Path="./assets/images/bugreport_task3.png" Style="width: 100%; height: auto">
+
+                    </RadzenImage>
+
+                    <RadzenStack Orientation="Orientation.Horizontal">
+                        <RadzenButton Icon="arrow_back_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 0) Click=@(() => Index--)/>
+
+                        <RadzenText Style="text-align: center">
+                            The "Side navigation" section visually highlights the current link but does not programmatically define it using aria-current,\
+                            which may confuse screen readers and assistive technologies.
+                        </RadzenText>
+
+                        <RadzenButton Icon="arrow_forward_ios" IconColor="#000000" Style="background-color: transparent; box-shadow: none"
+                                      Disabled=@(Index == 2) Click=@(() => Index++)/>
+
+                    </RadzenStack>
+                </RadzenCard>
+            }
+
+        </RadzenStack>
+
+        @if (ShowForm)
+        {
+            <RadzenCard Style="padding: 10px; width: 50%;display: flex;flex-direction: column; gap:10px; justify-content: space-between">
+                <RadzenText> Create </RadzenText>
+                <RadzenText> Required fields are marked with asterisk * </RadzenText>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].ProjectOptions" Placeholder="Project*" @bind-Value="Answers[Index].Project"></RadzenDropDown>
+                    <RadzenDropDown TValue="string" Data="Options[Index].IssueTypeOptions" Placeholder="Issue rype*" @bind-Value="Answers[Index].IssueType"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].TitleOptions" Placeholder="Title*" Style="width:100%" @bind-Value="Answers[Index].Title"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].DescriptionOptions" Placeholder="Description*" Style="width:100%;height:100px" @bind-Value="Answers[Index].Description"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].SeverityOptions" Placeholder="Severity*" @bind-Value="Answers[Index].Severity"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].PriorityOptions" Placeholder="Priority*" @bind-Value="Answers[Index].Priority"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].StepsToReproduceOptions" Placeholder="Steps to reproduce*" Style="width:100%;height:100px" @bind-Value="Answers[Index].Steps"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].ExpectedResultOptions" Placeholder="Expected result*" Style="width:100%;height:100px" @bind-Value="Answers[Index].ExpectedResult"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
+                    <RadzenDropDown TValue="string" Data="Options[Index].ActualResultOptions" Placeholder="Actual result*" Style="width:100%;height:100px" @bind-Value="Answers[Index].ActualResult"></RadzenDropDown>
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" Gap="15px">
+                    <RadzenButton Style="background-color: green" Click=@(() => { Answers[Index].IsCreated = true; ShowForm = false; })>Create</RadzenButton>
+                    <RadzenButton Click=@(() => ShowForm = !ShowForm) Style="background-color: red">Cancel</RadzenButton>
+                </RadzenStack>
+            </RadzenCard>
+        }
+        else
+        {
+            <RadzenCard Style="padding: 10px; width: 50%">
+                <RadzenCard Style="width: 100%; display: flex; justify-content: end">
+                    <RadzenButton Style="width: 40%" Click=@(() => ShowForm = !ShowForm)>
+                        Add new report
+                    </RadzenButton>
+                </RadzenCard>
+
+                @for (var i = 0; i < Answers.Count; ++i)
+                {
+                    if (Answers[i].IsCreated)
+                    {
+                        <BugReportPreview Index="i" @bind-BindingValue="Index" Click=@(() => ShowForm = !ShowForm) />
+                    }
+
+                }
+            </RadzenCard>
+        }
+
+    </RadzenStack>
+}
+else
+{
+    <RadzenStack Style="padding: 20px" Gap="20px">
+        <RadzenStack Orientation="Orientation.Vertical" Style="border:1px solid #000000;padding:15px">
+            <RadzenText Style="font-size: 20px;font-weight: bold;width: 100%;text-align: center">VLSE-1</RadzenText>
+            
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].Title == "Content fails to reflow" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Title: {Answers[0].Title}")
+                </RadzenText>
+
+                @if (Answers[0].Title == "Modal dialog content not responsive")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: This is vague and doesn’t highlight the specific issue of reflow failure or its impact.
+                    </RadzenText>
+                }
+                @if (Answers[0].Title == "Create issue modal zoom issue")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: It incorrectly implies the problem is related solely to zoom rather than reflow accessibility.
+                    </RadzenText>
+                }
+                @if (Answers[0].Title == "Page not rendering correctly")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Too generic and fails to specify the component or situation where the issue occurs.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].Description == "Content fails to reflow at 320 x 256 viewport, causing low-vision users to have difficulty accessing the content when zoomed in."
+                        ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Description: {Answers[0].Description}")
+                </RadzenText>
+
+                @if (Answers[0].Description == "Modal dialog becomes unresponsive on resizing the page.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misrepresents the issue as a functionality failure rather than a reflow issue.
+                    </RadzenText>
+                }
+                @if (Answers[0].Description == "Some users can’t access the \"Create issue\" modal dialog.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Implies complete inaccessibility rather than content being cut off.
+                    </RadzenText>
+                }
+                @if (Answers[0].Description == "The content disappears when switching devices.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Inaccurate and unrelated to viewport size or zoom.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].Severity == "Severity 3 - Minor" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Severity: {Answers[0].Severity}")
+                </RadzenText>
+
+                @if (Answers[0].Severity == "Severity 2 - Moderate")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue is significant but doesn't block critical functionality, so "Moderate" overstates its impact.
+                    </RadzenText>
+                }
+                @if (Answers[0].Severity == "Severity 1 - Critical")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue is related to accessibility and doesn’t completely block users, so it’s not "Critical."
+                    </RadzenText>
+                }
+                @if (Answers[0].Severity == "Severity 4 - Trivial")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Understates the importance of the issue for low-vision users.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].Priority == "Medium" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Severity: {Answers[0].Priority}")
+                </RadzenText>
+
+                @if (Answers[0].Priority == "High")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Although important, it doesn’t require an urgent fix compared to other critical bugs.
+                    </RadzenText>
+                }
+                @if (Answers[0].Priority == "Low")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Accessibility issues are never categorized as "Low" priority.
+                    </RadzenText>
+                }
+                @if (Answers[0].Priority == "Blocker")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue doesn’t block the system's core functionality.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].ExpectedResult == "All content should be visible at 320 x 256 viewport. Use relative CSS units and media queries to ensure proper reflow."
+                        ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Expected Result: {Answers[0].ExpectedResult}")
+                </RadzenText>
+
+                @if (Answers[0].ExpectedResult == "Content should be partially visible and scrollable at 320 x 256.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Suggests scrollbars are acceptable, which violates accessibility guidelines.
+                    </RadzenText>
+                }
+                @if (Answers[0].ExpectedResult == "Only important fields should be visible at 320 x 256.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: All content must remain accessible per WCAG standards.
+                    </RadzenText>
+                }
+                @if (Answers[0].ExpectedResult == "Reflow adjustments can be ignored for small viewports.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Contradicts accessibility requirements.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[0].ActualResult == "Content on the \"Create issue\" modal dialog gets cut off at 320 x 256, with dropdown and scrollbar issues."
+                        ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Actual Result: {Answers[0].ActualResult}")
+                </RadzenText>
+
+                @if (Answers[0].ActualResult == "Modal dialog doesn’t load at all on small devices.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misrepresents the bug as a loading issue rather than a reflow problem.
+                    </RadzenText>
+                }
+                @if (Answers[0].ActualResult == "All modal fields collapse into a single column layout.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Suggests an entirely different UI behavior than what happens.
+                    </RadzenText>
+                }
+                @if (Answers[0].ActualResult == "Users cannot resize the browser.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: This is unrelated to the viewport and reflow issues.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+        </RadzenStack>
+    </RadzenStack>
+
+    <RadzenStack Style="padding: 20px" Gap="20px">
+        <RadzenStack Orientation="Orientation.Vertical" Style="border:1px solid #000000;padding:15px">
+            <RadzenText Style="font-size: 20px;font-weight: bold;width: 100%;text-align: center">VLSE-2</RadzenText>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].Title == "Switching from \"exemptions\" to \"list of limited accounts\" in the rate limiting admin page causes page to go blank" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Title: {Answers[1].Title}")
+                </RadzenText>
+
+                @if (Answers[1].Title == "Rate limiting page fails to load when switching tabs")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: It’s vague and doesn’t specify the circumstances under which the page goes blank.
+                    </RadzenText>
+                }
+                @if (Answers[1].Title == "Exemptions tab not working correctly")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue is related to switching tabs, not the functionality of the exemptions tab.
+                    </RadzenText>
+                }
+                @if (Answers[1].Title == "Admin settings inaccessible in rate limiting")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misrepresents the issue as affecting all admin settings rather than specific tabs.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].Description == "Switching from the exemptions tab to \"list of limited accounts\" in \u2699\ufe0f > System Rate Limiting causes the page to go blank when an exempt user has not been rate-limited."
+                                      ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Description: {Answers[1].Description}")
+                </RadzenText>
+
+                @if (Answers[1].Description == "Exemptions list causes errors when switching tabs in the rate limiting settings.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: It implies the issue lies with the exemptions list itself rather than the tab-switching behavior.
+                    </RadzenText>
+                }
+                @if (Answers[1].Description == "Blank page occurs when accessing rate limiting settings for specific accounts.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Fails to mention the switching action or the conditions involving non-rate-limited users.
+                    </RadzenText>
+                }
+                @if (Answers[1].Description == "System Rate Limiting feature crashes when viewing settings.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Overstates the problem by implying a crash instead of a blank page.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].Severity == "Severity 3 - Minor" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Severity: {Answers[1].Severity}")
+                </RadzenText>
+
+                @if (Answers[1].Severity == "Severity 2 - Moderate")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue is significant but doesn't block critical functionality, so "Moderate" overstates its impact.
+                    </RadzenText>
+                }
+                @if (Answers[1].Severity == "Severity 1 - Critical")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue is related to accessibility and doesn’t completely block users, so it’s not "Critical."
+                    </RadzenText>
+                }
+                @if (Answers[1].Severity == "Severity 4 - Trivial")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Understates the importance of the issue for low-vision users.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].Priority == "Low" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Severity: {Answers[1].Priority}")
+                </RadzenText>
+
+                @if (Answers[1].Priority == "High")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Although important, it doesn’t require an urgent fix compared to other critical bugs.
+                    </RadzenText>
+                }
+                @if (Answers[1].Priority == "Medium")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: This isn’t urgent and doesn’t directly impact most users.
+                    </RadzenText>
+                }
+                @if (Answers[1].Priority == "Blocker")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue doesn’t block the system's core functionality.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].ExpectedResult == "The list of limited accounts loads a list of users that have been rate-limited."
+                                      ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Expected Result: {Answers[1].ExpectedResult}")
+                </RadzenText>
+
+                @if (Answers[1].ExpectedResult == "The list of limited accounts should load regardless of conditions.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Overgeneralizes the behavior without acknowledging the specific context.
+                    </RadzenText>
+                }
+                @if (Answers[1].ExpectedResult == "Exemptions and rate-limited users should be displayed in the same tab.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misrepresents the intended separation of features.
+                    </RadzenText>
+                }
+                @if (Answers[1].ExpectedResult == "The rate limiting page should only load exempted users.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misinterprets the functionality of the "List of Limited Accounts" tab.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+            <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[1].ActualResult == "The page goes blank when switching from \"Exemptions\" to \"List of Limited Accounts.\""
+                                      ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                    @($"Actual Result: {Answers[1].ActualResult}")
+                </RadzenText>
+
+                @if (Answers[1].ActualResult == "The page displays an error message instead of loading correctly.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: The issue results in a blank page, not an error message.
+                    </RadzenText>
+                }
+                @if (Answers[1].ActualResult == "Only partial data is displayed for limited accounts.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: This inaccurately describes the issue as incomplete data rather than a blank page.
+                    </RadzenText>
+                }
+                @if (Answers[1].ActualResult == "The exemptions list gets cleared after switching tabs.")
+                {
+                    <RadzenText Style="color: red">
+                        Why incorrect: Misrepresents the behavior, as the issue pertains to the "List of Limited Accounts" tab.
+                    </RadzenText>
+                }
+            </RadzenStack>
+
+        </RadzenStack>
+
+
+        
+    </RadzenStack>
+
+    <RadzenStack Style="padding: 20px" Gap="20px">
+    <RadzenStack Orientation="Orientation.Vertical" Style="border:1px solid #000000;padding:15px">
+        <RadzenText Style="font-size: 20px;font-weight: bold;width: 100%;text-align: center">VLSE-3</RadzenText>
+
+        <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[2].Title == "Filter issues sidebar navigation: Current element is not programmatically defined" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Title: {Answers[2].Title}")
+            </RadzenText>
+
+                @if (Answers[2].Title == "Sidebar navigation fails for screen readers")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: It oversimplifies the issue, focusing only on screen reader functionality rather than the lack of programmatic definition.
+                </RadzenText>
+            }
+                @if (Answers[2].Title == "Sidebar navigation links are broken")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Misleading as the links work but lack an accessibility attribute.
+                </RadzenText>
+            }
+                @if (Answers[2].Title == "Sidebar navigation accessibility completely fails")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Exaggerates the issue; the accessibility problem is specific to programmatically defining the current state.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+        <RadzenStack Gap="0px">
+            <RadzenText Style=@(Answers[2].Description == "The link that is visually highlighted as currently relevant in the \"Side navigation\" section does not have a programmatically defined current page state."
+                                  ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Description: {Answers[2].Description}")
+            </RadzenText>
+
+                @if (Answers[2].Description == "The sidebar does not support accessibility guidelines.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Vague and does not specifically reference the lack of programmatic definition for the current state.
+                </RadzenText>
+            }
+                @if (Answers[2].Description == "No highlighted link in the sidebar navigation.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Misstates the problem since links are visually highlighted but lack programmatic definition.
+                </RadzenText>
+            }
+                @if (Answers[2].Description == "Screen readers fail to navigate the sidebar.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Overgeneralizes the problem, as the issue pertains to a specific accessibility attribute.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+        <RadzenStack Gap="0px">
+            <RadzenText Style=@(Answers[2].Severity == "Severity 3 - Minor" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Severity: {Answers[2].Severity}")
+            </RadzenText>
+
+            @if (Answers[2].Severity == "Severity 2 - Moderate")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: The issue is significant but doesn't block critical functionality, so "Moderate" overstates its impact.
+                </RadzenText>
+            }
+            @if (Answers[2].Severity == "Severity 1 - Critical")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: The issue is related to accessibility and doesn’t completely block users, so it’s not "Critical."
+                </RadzenText>
+            }
+            @if (Answers[2].Severity == "Severity 4 - Trivial")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: Understates the importance of the issue for low-vision users.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+        <RadzenStack Gap="0px">
+            <RadzenText Style=@(Answers[2].Priority == "Low" ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Severity: {Answers[2].Priority}")
+            </RadzenText>
+
+            @if (Answers[2].Priority == "High")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: Although important, it doesn’t require an urgent fix compared to other critical bugs.
+                </RadzenText>
+            }
+            @if (Answers[2].Priority == "Medium")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: This isn’t urgent and doesn’t directly impact most users.
+                </RadzenText>
+            }
+            @if (Answers[2].Priority == "Blocker")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: The issue doesn’t block the system's core functionality.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+        <RadzenStack Gap="0px">
+            <RadzenText Style=@(Answers[2].ExpectedResult == "The current state is programmatically defined for the visually highlighted link in the sidebar, using attributes like aria-current=\"page\"."
+                                  ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Expected Result: {Answers[2].ExpectedResult}")
+            </RadzenText>
+
+                @if (Answers[2].ExpectedResult == "The sidebar navigation automatically fixes all accessibility issues.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Too broad and not specific to defining the current state programmatically.
+                </RadzenText>
+            }
+                @if (Answers[2].ExpectedResult == "All links in the sidebar should be marked as current.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Only the currently active link should be marked as current.
+                </RadzenText>
+            }
+            @if (Answers[2].ExpectedResult == "The sidebar navigation should display a \"current page\" label for every link.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Only the active link requires the "current page" indication.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+        <RadzenStack Gap="0px">
+                <RadzenText Style=@(Answers[2].ActualResult == "The visually highlighted link in the sidebar lacks programmatic indication of its current state, potentially confusing screen reader users."
+                                  ? "color:green;font-size: 20px;font-weight: bold;" : "color:red;font-size: 20px;font-weight: bold;")>
+                @($"Actual Result: {Answers[2].ActualResult}")
+            </RadzenText>
+
+                @if (Answers[2].ActualResult == "The sidebar does not display any visually highlighted links.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: Links are visually highlighted but lack programmatic definition.
+                </RadzenText>
+            }
+                @if (Answers[2].ActualResult == "Sidebar navigation completely fails for all users.")
+            {
+                <RadzenText Style="color: red">
+                        Why incorrect: The navigation works, but accessibility for assistive technologies is impacted.
+                </RadzenText>
+            }
+                @if (Answers[2].ActualResult == "All links in the sidebar are incorrectly marked as current.")
+            {
+                <RadzenText Style="color: red">
+                    Why incorrect: No links are programmatically marked as current.
+                </RadzenText>
+            }
+        </RadzenStack>
+
+    </RadzenStack>
+    </RadzenStack>
+}
+
+
+@code {
+
+    public bool ShowForm = false;
+    public int Index = 0;
+    public bool CheckResults = false;
+
+    public class BugReportOptions
+    {
+        public List<string> ProjectOptions =
+        [
+            "Test project",
+        ];
+
+        public List<string> IssueTypeOptions =
+       [
+       "Bug",
+    ];
+
+        public List<string> TitleOptions =
+        [
+            "Content fails to reflow",
+    "Modal dialog content not responsive",
+    "Create issue modal zoom issue",
+    "Page not rendering correctly",
+    ];
+
+        public List<string> DescriptionOptions = new List<string>
+    {
+        "Content fails to reflow at 320 x 256 viewport, causing low-vision users to have difficulty accessing the content when zoomed in.",
+        "Modal dialog becomes unresponsive on resizing the page.",
+        "Some users can’t access the 'Create issue' modal dialog.",
+        "The content disappears when switching devices."
+    };
+
+        public List<string> SeverityOptions = new List<string>
+    {
+        "Severity 3 - Minor",
+        "Severity 2 - Moderate",
+        "Severity 1 - Critical",
+        "Severity 4 - Trivial"
+    };
+
+        public List<string> PriorityOptions = new List<string>
+    {
+        "Medium",
+        "High",
+        "Low",
+        "Blocker"
+    };
+
+        public List<string> StepsToReproduceOptions = new List<string>
+    {
+        "Navigate to the 'Create' link in the header and activate it.\nObserve the modal dialog on the page.\nActivate 'Configure field.'\nUse cmd+ctrl+R (Safari) or 'Toggle device toolbar' (Chrome).\nSet resolution to 320 x 256.\nObserve content fails to reflow.",
+        "Navigate to the 'Home' page and refresh the browser multiple times.",
+        "Open the browser, activate the 'Create' link, and adjust the resolution to 1920 x 1080.",
+        "Navigate to 'Create' > 'Settings' and scroll down the page."
+    };
+
+        public List<string> ExpectedResultOptions = new List<string>
+    {
+        "All content should be visible at 320 x 256 viewport. Use relative CSS units and media queries to ensure proper reflow.",
+        "Content should be partially visible and scrollable at 320 x 256.",
+        "Only important fields should be visible at 320 x 256.",
+        "Reflow adjustments can be ignored for small viewports."
+    };
+
+        public List<string> ActualResultOptions = new List<string>
+    {
+        "Content on the 'Create issue' modal dialog gets cut off at 320 x 256, with dropdown and scrollbar issues.",
+        "Modal dialog doesn’t load at all on small devices.",
+        "All modal fields collapse into a single column layout.",
+        "Users cannot resize the browser."
+    };
+    }
+
+    public List<BugReportOptions> Options =
+    [
+        new(),
+        new()
+        {
+            TitleOptions = new List<string>
+            {
+                "Switching from 'exemptions' to 'list of limited accounts' in the rate limiting admin page causes page to go blank",
+                "Rate limiting page fails to load when switching tabs",
+                "Exemptions tab not working correctly",
+                "Admin settings inaccessible in rate limiting"
+            },
+
+            DescriptionOptions = new List<string>
+            {
+                "Switching from the exemptions tab to 'list of limited accounts' in ⚙️ > System Rate Limiting causes the page to go blank when an exempt user has not been rate-limited.",
+                "Exemptions list causes errors when switching tabs in the rate limiting settings.",
+                "Blank page occurs when accessing rate limiting settings for specific accounts.",
+                "System Rate Limiting feature crashes when viewing settings."
+            },
+
+            SeverityOptions = new List<string>
+            {
+                "Severity 3 - Minor",
+                "Severity 2 - Moderate",
+                "Severity 4 - Trivial",
+                "Severity 1 - Critical"
+            },
+
+            PriorityOptions = new List<string>
+            {
+                "Low",
+                "Medium",
+                "High",
+                "Blocker"
+            },
+
+            StepsToReproduceOptions = new List<string>
+            {
+                "Add a user to the exemption list who has not been rate-limited.\nNavigate to ⚙️ > System Rate Limiting.\nSwitch from the 'Exemptions' tab to the 'List of Limited Accounts' tab.",
+                "Add a user to the rate limiting list who has been exempted.\nOpen the rate limiting page and refresh it.",
+                "Navigate directly to the 'List of Limited Accounts' tab.\nTry to add a user to the exemptions list from there.",
+                "Add multiple users to the exemptions list.\nChange any other admin setting in the System tab."
+            },
+
+            ExpectedResultOptions = new List<string>
+            {
+                "The list of limited accounts loads a list of users that have been rate-limited.",
+                "The list of limited accounts should load regardless of conditions.",
+                "Exemptions and rate-limited users should be displayed in the same tab.",
+                "The rate limiting page should only load exempted users."
+            },
+
+            ActualResultOptions = new List<string>
+            {
+                "The page goes blank when switching from 'Exemptions' to 'List of Limited Accounts.'",
+                "The page displays an error message instead of loading correctly.",
+                "Only partial data is displayed for limited accounts.",
+                "The exemptions list gets cleared after switching tabs."
+            },
+        },
+        new()
+        {
+            TitleOptions = new List<string>
+            {
+                "Filter issues sidebar navigation: Current element is not programmatically defined",
+                "Sidebar navigation fails for screen readers",
+                "Sidebar navigation links are broken",
+                "Sidebar navigation accessibility completely fails"
+            },
+
+            DescriptionOptions = new List<string>
+            {
+                "The link that is visually highlighted as currently relevant in the 'Side navigation' section does not have a programmatically defined current page state.",
+                "The sidebar does not support accessibility guidelines.",
+                "No highlighted link in the sidebar navigation.",
+                "Screen readers fail to navigate the sidebar."
+            },
+
+            SeverityOptions = new List<string>
+            {
+                "Severity 3 - Minor",
+                "Severity 2 - Moderate",
+                "Severity 4 - Trivial",
+                "Severity 1 - Critical"
+            },
+
+            PriorityOptions = new List<string>
+            {
+                "Low",
+                "Medium",
+                "High",
+                "Blocker"
+            },
+
+            StepsToReproduceOptions = new List<string>
+            {
+                "Navigate to the relevant page with the sidebar navigation.\nObserve the visually highlighted link indicating the current page.\nInspect the link's code using the browser developer tools.\nNote that the aria-current attribute or equivalent is missing.",
+                "Open the sidebar and click on any link.\nObserve that none of the links highlight visually or programmatically.",
+                "Attempt to navigate the sidebar using only the keyboard.",
+                "Use a screen reader and note that no links are accessible."
+            },
+
+            ExpectedResultOptions = new List<string>
+            {
+                "The current state is programmatically defined for the visually highlighted link in the sidebar, using attributes like aria-current=\"page\".",
+                "The sidebar navigation automatically fixes all accessibility issues.",
+                "All links in the sidebar should be marked as current.",
+                "The sidebar navigation should display a 'current page' label for every link."
+            },
+
+            ActualResultOptions = new List<string>
+            {
+                "The visually highlighted link in the sidebar lacks programmatic indication of its current state, potentially confusing screen reader users.",
+                "The sidebar does not display any visually highlighted links.",
+                "Sidebar navigation completely fails for all users.",
+                "All links in the sidebar are incorrectly marked as current."
+            },
+        }
+    ];
+
+    
+    public class AnswerModel
+    {
+        public string Project { get; set; }
+        public string IssueType { get; set; }
+        public string Title { get; set; }
+        public string Severity { get; set; }
+        public string Priority { get; set; }
+        public string Steps { get; set; }
+        public string ExpectedResult { get; set; }
+        public string ActualResult { get; set; }
+        public string Description { get; set; }
+        public bool IsCreated { get; set; }
+    }
+
+    public List<AnswerModel> Answers = [new(), new(), new()];
+
+    private async Task ShowHintAsync()
+    {
+        await DialogService.OpenAsync<BugReportModal>("",
+            new Dictionary<string, object>(),
+            new DialogOptions()
+                {
+                    ShowTitle = false,
+                    Resizable = false,
+                    Draggable = true,
+                    Width = "500px",
+                    ShowClose = true,
+                    CloseDialogOnEsc = true,
+                    CloseDialogOnOverlayClick = true,
+                });
+    }
+}

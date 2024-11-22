@@ -1,6 +1,8 @@
 ﻿@using Contracts.Internal
+@inject NavigationManager NavigationManager
 
-<RadzenCard Style="width: 100%; border-radius: 0; padding:3%;background-color: transparent">
+<RadzenCard Style="width: 100%; border-radius: 0; padding:3%;background-color: transparent" 
+            @onclick=@(() => NavigationManager.NavigateTo("/bugreport"))>
     
     @if (Test.IsPremium)
     {
