@@ -1,8 +1,9 @@
 ﻿@using Contracts.Internal
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
 
 <RadzenCard Style="width: 100%; border-radius: 0; padding:3%;background-color: transparent" 
-            @onclick=@(() => NavigationManager.NavigateTo("/bugreport"))>
+            @onclick=@(() => Navigate())>
     
     @if (Test.IsPremium)
     {
@@ -59,4 +60,17 @@
 
     [Parameter] public required TestPreviewModel Test { get; set; }
 
+    private void Navigate()
+    {
+        string category = LocalStorage.GetItem<string>("testCategory");
+
+        if (category == "BugReports")
+        {
+            NavigationManager.NavigateTo("/bugreport");
+        }
+        else if (category == "AutomatedTests")
+        {
+            NavigationManager.NavigateTo("/autotest");
+        }
+    }
 }
