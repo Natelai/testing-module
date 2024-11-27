@@ -25,16 +25,16 @@
                     Data=@(Enum.GetNames(typeof(TestComplexity)).ToList())
                     Change="RefreshDataStateAsync" />
     
-    <RadzenTextBox Placeholder="Search..." @bind-Value="_search" />
+    <RadzenTextBox Placeholder="Search..." @bind-Value="_search" Change="RefreshDataStateAsync" />
 
 </RadzenStack>
 
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Gap="10px" Style="margin-top:15px">
-    <RadzenDatePicker TValue="DateOnly" @bind-Value="_dateOfTest" Placeholder="Date of test"/>
+    <RadzenDatePicker TValue="DateOnly" @bind-Value="_dateOfTest" Placeholder="Date of test" Change="RefreshDataStateAsync"/>
     
     <RadzenStack Style="margin: 0 10px;">
         <RadzenText Text=@($"Duration: {_maxDuration}") Style="margin:unset" />
-        <RadzenSlider Min="0" Max="90" TValue="int" @bind-Value=@_maxDuration Step="10"/>
+        <RadzenSlider Min="0" Max="90" TValue="int" @bind-Value=@_maxDuration Step="10" Change="RefreshDataStateAsync"/>
     </RadzenStack>
 
     
