@@ -8,14 +8,14 @@
 @if (!CheckResults)
 {
     <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" Gap="0px">
-        <RadzenStack Style="padding: 10px; width: 50%" Gap="0px">
+        <RadzenStack Style="padding: 10px; width: 50%" Gap="20px">
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenText>
                     You need to carefully examine the proposed images and read their descriptions.
                     Then, create and submit a new bug report for each image. Finally, complete the test.
                 </RadzenText>
 
-                <RadzenButton Style="background-color: green;green; width: 40%;height: 80%;" Click=@(() => CheckResults = !CheckResults)>
+                <RadzenButton Style="background-color: green;width:80%" Click=@(() => CheckResults = !CheckResults)>
                     Finish test
                 </RadzenButton>
             </RadzenStack>
@@ -120,7 +120,7 @@
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
-                    <RadzenDropDown TValue="string" Data="Options[Index].DescriptionOptions" Placeholder="Description*" Style="width:100%;height:100px;max-width: 715px;" @bind-Value="Answers[Index].Description"></RadzenDropDown>
+                    <RadzenDropDown TValue="string" Data="Options[Index].DescriptionOptions" Placeholder="Description*" Style="width:100%;height:100px" @bind-Value="Answers[Index].Description"></RadzenDropDown>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
@@ -132,15 +132,15 @@
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
-                    <RadzenDropDown TValue="string" Data="Options[Index].StepsToReproduceOptions" Placeholder="Steps to reproduce*" Style="width:100%;height:100px;max-width: 715px;" @bind-Value="Answers[Index].Steps"></RadzenDropDown>
+                    <RadzenDropDown TValue="string" Data="Options[Index].StepsToReproduceOptions" Placeholder="Steps to reproduce*" Style="width:100%;height:100px" @bind-Value="Answers[Index].Steps"></RadzenDropDown>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
-                    <RadzenDropDown TValue="string" Data="Options[Index].ExpectedResultOptions" Placeholder="Expected result*" Style="width:100%;height:100px;max-width: 715px;" @bind-Value="Answers[Index].ExpectedResult"></RadzenDropDown>
+                    <RadzenDropDown TValue="string" Data="Options[Index].ExpectedResultOptions" Placeholder="Expected result*" Style="width:100%;height:100px" @bind-Value="Answers[Index].ExpectedResult"></RadzenDropDown>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%">
-                    <RadzenDropDown TValue="string" Data="Options[Index].ActualResultOptions" Placeholder="Actual result*" Style="width:100%;height:100px;max-width: 715px;" @bind-Value="Answers[Index].ActualResult"></RadzenDropDown>
+                    <RadzenDropDown TValue="string" Data="Options[Index].ActualResultOptions" Placeholder="Actual result*" Style="width:100%;height:100px" @bind-Value="Answers[Index].ActualResult"></RadzenDropDown>
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Style="width: 100%" Gap="15px">
