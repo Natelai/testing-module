@@ -1,6 +1,9 @@
 ﻿@page "/bugreport"
 @using Frontend.Presentation.Pages.Components
+@using Frontend.Presentation.Pages.Modals
+@using Frontend.Presentation.Services
 @inject DialogService DialogService
+@inject UserService UserService
 
 @if (!CheckResults)
 {
@@ -870,6 +873,13 @@ else
 
     private async Task ShowHintAsync()
     {
+        var res = await IsUserPremiumAsync();
+
+        if (!res)
+        {
+            return;
+        }
+
         await DialogService.OpenAsync<BugReportModal>("",
             new Dictionary<string, object>(),
             new DialogOptions()
@@ -882,5 +892,26 @@ else
                     CloseDialogOnEsc = true,
                     CloseDialogOnOverlayClick = true,
                 });
+    }
+
+    public async Task<bool> IsUserPremiumAsync()
+    {
+        var res = await UserService.IsUserPremiumAsync();
+
+        if (!res)
+        {
+            await DialogService.OpenAsync<BuyPremiumModal>("",
+                new Dictionary<string, object>(),
+                new DialogOptions() 
+                {
+                    ShowTitle = false,
+                    Resizable = false, 
+                    Draggable = true,
+                    Width="1000px",
+                    ShowClose = true,
+                });
+        }
+
+        return res;
     }
 }

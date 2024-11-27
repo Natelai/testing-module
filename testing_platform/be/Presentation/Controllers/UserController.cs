@@ -112,7 +112,28 @@ public class UserController(AppDbContext context, UserManager<User> userManager,
         }
 
         user.IsPremium = true;
+        await _context.SaveChangesAsync(ct);
 
         return Ok();
+    }
+
+    [HttpGet("isPremium")]
+    public async Task<ActionResult> IsUserPremium(CancellationToken ct)
+    {
+        var userName = User.Identity!.Name;
+
+        if (userName is null)
+        {
+            return BadRequest("Unable to check user identity");
+        }
+
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.UserName == userName, ct);
+
+        if (user.IsPremium)
+        {
+            return Ok();
+        }
+
+        return BadRequest();
     }
 }
