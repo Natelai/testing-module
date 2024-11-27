@@ -66,4 +66,14 @@ public class UserService
 
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<bool> IsUserPremiumAsync()
+    {
+        _httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", await _authService.GetToken());
+
+        var response = await _httpClient.GetAsync("api/User/isPremium");
+
+        return response.IsSuccessStatusCode;
+    }
 }

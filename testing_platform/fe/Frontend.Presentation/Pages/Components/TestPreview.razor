@@ -1,8 +1,13 @@
 ﻿@using Contracts.Internal
+@using Frontend.Presentation.Pages.Modals
+@using Frontend.Presentation.Services
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ISyncLocalStorageService LocalStorage
+@inject UserService UserService
+@inject DialogService DialogService
 
 <RadzenCard Style="width: 100%; border-radius: 0; padding:3%;background-color: transparent" 
-            @onclick=@(() => NavigationManager.NavigateTo("/bugreport"))>
+            @onclick=@(() => Navigate())>
     
     @if (Test.IsPremium)
     {
@@ -59,4 +64,48 @@
 
     [Parameter] public required TestPreviewModel Test { get; set; }
 
+    private async void Navigate()
+    {
+        if (Test.IsPremium)
+        {
+            var rsp = await IsUserPremiumAsync();
+
+            if (!rsp)
+            {
+                return;
+            }
+        }
+
+        string category = LocalStorage.GetItem<string>("testCategory");
+
+        if (category == "BugReports")
+        {
+            NavigationManager.NavigateTo("/bugreport");
+        }
+        else if (category == "AutomatedTests")
+        {
+            NavigationManager.NavigateTo("/autotest");
+        }
+    }
+
+    public async Task<bool> IsUserPremiumAsync()
+    {
+        var res = await UserService.IsUserPremiumAsync();
+
+        if (!res)
+        {
+            await DialogService.OpenAsync<BuyPremiumModal>("",
+                new Dictionary<string, object>(),
+                new DialogOptions() 
+                {
+                    ShowTitle = false,
+                    Resizable = false, 
+                    Draggable = true,
+                    Width="1000px",
+                    ShowClose = true,
+                });
+        }
+
+        return res;
+    }
 }
