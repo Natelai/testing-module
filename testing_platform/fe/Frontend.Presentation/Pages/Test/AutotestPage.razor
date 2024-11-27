@@ -4,13 +4,31 @@
 @if (!ShowResults)
 {
     <RadzenStack Orientation="Orientation.Horizontal">
-        <RadzenStack Style="width:40%">
-            <RadzenText>
-                Read the requirements for the functionality of the page, analyze HTML code of the page and the description of the tests to be passed and write them.
-            </RadzenText>
+        <RadzenStack Style="width:650px">
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenText>
+                    Read the requirements for the functionality of the page, analyze HTML code of 
+                    the page and the description of the tests to be passed and write them.
+                </RadzenText>
+
+                <RadzenButton Style="background-color:  #13bb03;width: 40%;height: 80%;" Click=@(() => ShowResults = true)>
+                    Finish test
+                </RadzenButton>
+            </RadzenStack>
 
             <RadzenText>
-                You are testing the page https://formstesting/testform. The title of the page should be "Sample Form" when it is opened, the user enters the name, password and email. Next, he clicks submit the form, and a message about the successful submission of data from the form is displayed to him with the text "Form submitted successfully!", otherwise this message is not displayed. The following cases should be tested: valid data, missing name, invalid mail, missing password.
+                <p>
+                    You are testing the page <a href="https://formstesting/testform" target="_blank">https://formstesting/testform</a>.
+                    The title of the page should be "Sample Form" when it is opened. The user enters the name,
+                    password, and email, then clicks submit. A message "Form submitted successfully!" should display for valid data.
+                    Test the following cases:
+                </p>
+                <ul>
+                    <li>Valid data</li>
+                    <li>Missing name</li>
+                    <li>Invalid email</li>
+                    <li>Missing password</li>
+                </ul>
             </RadzenText>
 
             <RadzenImage Path="./assets/images/autotest-photo.png">
@@ -18,7 +36,7 @@
             </RadzenImage>
         </RadzenStack>
 
-        <RadzenStack Style="width: 50%">
+        <RadzenStack Style="width: 800px">
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenButton Style="background-color: #d9d9d9" Text="+" Click="AddNewTest" />
 
@@ -33,9 +51,16 @@
             @if (Tests.Count > 0)
             {
                 <RadzenStack Style="margin-top: 30px; gap: 5px">
+                    <!-- Header Row -->
+                    <RadzenStack Orientation="Orientation.Horizontal" Style="font-weight: bold; margin-bottom: 5px;">
+                        <RadzenText Style="width: 30%;" Text="Command" />
+                        <RadzenText Style="width: 30%;" Text="Target" />
+                        <RadzenText Style="width: 30%;" Text="Value" />
+                    </RadzenStack>
+
+                    <!-- Dropdown Rows -->
                     @foreach (var t in Tests[Index].Commands)
                     {
-
                         <RadzenStack Orientation="Orientation.Horizontal">
                             <RadzenDropDown Data="CommandData" TValue="string" Placeholder="Command" @bind-Value="@t.Command" Style="width:30%" />
                             <RadzenDropDown Data="TargetData" TValue="string" Placeholder="Target" @bind-Value="@t.Target" Style="width:30%" />
@@ -45,9 +70,6 @@
                 </RadzenStack>
             }
 
-            <RadzenButton Style="background-color: #13bb03; width: 90%" Click=@(() => ShowResults = true)>
-                Finish test
-            </RadzenButton>
         </RadzenStack>
     </RadzenStack>
 }
@@ -60,254 +82,254 @@ else
         </RadzenButton>
     </RadzenStack>
 
-    <RadzenStack Style="gap:0px;border: 1px solid #000000;margin:10px">
+    <RadzenStack Style="gap:0px;border: 1px solid #808080;margin:10px; border-radius 10px;">
         <RadzenText Style="width: 100%;text-align: center" Text="Test 1"/>
 
         @if (Tests[0].Commands[0].ToString() == "open\t/path/to/your/html/file\t-")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[0].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[0].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[0].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[0].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[1].ToString() == "assertTitle\tSample Form\t-")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[1].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[1].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[1].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[1].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[2].ToString() == "type\tcss=#username\tTestUser")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[2].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[2].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[2].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[2].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[3].ToString() == "type\tcss=#email\ttestuser@example.com")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[3].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[3].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[3].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[3].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[4].ToString() == "type\tcss=#password\tPassword123")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[4].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[4].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[4].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[4].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[5].ToString() == "click\tcss=#submit-button\t-")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[5].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[5].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[5].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[5].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
         
         @if (Tests[0].Commands[6].ToString() == "assertText\tcss=#success-message\tForm submitted successfully!")
         {
-            <RadzenText Text=@($"{Tests[0].Commands[6].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[6].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[0].Commands[6].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[0].Commands[6].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
     </RadzenStack>
 
-    <RadzenStack Style="gap:0px;border: 1px solid #000000;margin:10px">
+    <RadzenStack Style="gap:0px;border: 1px solid #808080;margin:10px; border-radius 10px;">
         <RadzenText Style="width: 100%;text-align: center" Text="Test 2" />
 
         @if (Tests[1].Commands[0].ToString() == "open\t/path/to/your/html/file\t-")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[0].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[0].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[0].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[0].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[1].Commands[1].ToString() == "assertTitle\tSample Form\t-")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[1].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[1].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[1].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[1].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[1].Commands[2].ToString() == "type\tcss=#email\ttestuser@example.com")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[2].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[2].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[2].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[2].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[1].Commands[3].ToString() == "type\tcss=#password\tPassword123")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[3].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[3].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[3].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[3].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[1].Commands[4].ToString() == "click\tcss=#submit-button\t-")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[4].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[4].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[4].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[4].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[1].Commands[5].ToString() == "assertNotVisible\tcss=#success-message\t-")
         {
-            <RadzenText Text=@($"{Tests[1].Commands[5].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[5].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[1].Commands[5].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[1].Commands[5].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
     </RadzenStack>
 
-    <RadzenStack Style="gap:0px;border: 1px solid #000000;margin:10px">
+    <RadzenStack Style="gap:0px;border: 1px solid #808080;margin:10px; border-radius 10px;">
         <RadzenText Style="width: 100%;text-align: center" Text="Test 3" />
 
         @if (Tests[2].Commands[0].ToString() == "open\t/path/to/your/html/file\t-")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[0].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[0].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[0].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[0].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[1].ToString() == "assertTitle\tSample Form\t-")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[1].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[1].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[1].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[1].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[2].ToString() == "type\tcss=#username\tTestUser")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[2].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[2].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[2].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[2].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[3].ToString() == "type\tcss=#email\tinvalid-email-format")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[3].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[3].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[3].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[3].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[4].ToString() == "type\tcss=#password\tPassword123")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[4].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[4].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[4].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[4].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[5].ToString() == "type\tcss=#password\tPassword123")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[5].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[5].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[5].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[5].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[2].Commands[6].ToString() == "click\tcss=#submit-button\t-")
         {
-            <RadzenText Text=@($"{Tests[2].Commands[6].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[6].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[2].Commands[6].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[2].Commands[6].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
     </RadzenStack>
 
-    <RadzenStack Style="gap:0px;border: 1px solid #000000;margin:10px">
+    <RadzenStack Style="gap:0px;border: 1px solid #808080;margin:10px; border-radius 10px;">
         <RadzenText Style="width: 100%;text-align: center" Text="Test 4" />
 
         @if (Tests[3].Commands[0].ToString() == "open\t/path/to/your/html/file\t-")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[0].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[0].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[0].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[0].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[3].Commands[1].ToString() == "assertTitle\tSample Form\t-")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[1].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[1].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[1].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[1].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[3].Commands[2].ToString() == "type\tcss=#username\tTestUser")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[2].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[2].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[2].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[2].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[3].Commands[3].ToString() == "type\tcss=#email\ttestuser@example.com")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[3].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[3].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[3].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[3].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[3].Commands[4].ToString() == "click\tcss=#submit-button\t-")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[4].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[4].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[4].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[4].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
         @if (Tests[3].Commands[5].ToString() == "assertNotVisible\tcss=#success-message\t-")
         {
-            <RadzenText Text=@($"{Tests[3].Commands[5].ToString()}") Style="color: green"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[5].ToString()}") Style="color: green; white-space: pre;"></RadzenText>
         }
         else
         {
-            <RadzenText Text=@($"{Tests[3].Commands[5].ToString()}") Style="color: red"></RadzenText>
+            <RadzenText Text=@($"{Tests[3].Commands[5].ToString()}") Style="color: red; white-space: pre;"></RadzenText>
         }
 
     </RadzenStack>
@@ -323,7 +345,7 @@ else
 
         public override string ToString()
         {
-            return Command + "\t" + Target + "\t" + Value;
+            return "\t" + Command + "\t" + Target + "\t" + Value;
         }
     }
 

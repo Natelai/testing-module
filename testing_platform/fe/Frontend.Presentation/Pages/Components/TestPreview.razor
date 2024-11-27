@@ -6,7 +6,7 @@
 @inject UserService UserService
 @inject DialogService DialogService
 
-<RadzenCard Style="width: 100%; border-radius: 0; padding:3%;background-color: transparent" 
+<RadzenCard Style="width: 347px; border-radius: 0; padding:3%;background-color: transparent" 
             @onclick=@(() => Navigate())>
     
     @if (Test.IsPremium)
@@ -18,9 +18,9 @@
         <div class="free-type-box">Free</div>
     }
     
-    <RadzenText Text="@Test.Caption" Style="text-align: start;color: #000000;margin: 10px 0;font-size: 26px;font-weight: 400;"/>
+    <RadzenText Text="@Test.Caption" Style="text-align: start;color: #000000;margin: 10px 0;font-size: 26px;font-weight: 400; height: 78px;align-content: center;" />
     
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="margin: 0px 0px 50px 0px">
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" Style="margin: 0px 0px 30px 0px">
         <RadzenText Text="@Test.UploadDate.ToString("dd-yyyy")"/>
         <RadzenText Text="|" />
         <RadzenText Text="@($"{Test.DurationInMinutes.ToString()} min")"/>
@@ -43,7 +43,7 @@
         }
     </div>
     
-    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween">
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" Style="flex-wrap:nowrap;margin-top: 40px;">
         
         <RadzenCard class="test-preview-status-box" 
                     Style=@string.Concat("background-color:", Test.IsCompleted ? "#4caf50" : "transparent")>

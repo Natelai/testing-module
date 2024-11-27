@@ -29,6 +29,7 @@
     max-height: 30px;
     margin: 10px 0;
     display: flex;
+    flex-wrap: wrap;
     gap: 5px;
     justify-content: left
 }

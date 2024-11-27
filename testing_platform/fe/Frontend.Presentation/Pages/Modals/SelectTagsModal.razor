@@ -34,12 +34,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _tags = (await TestPreviewService.GetTagsList(10000, 0, null)).Data;
-        _tags.Add("Tag6");
-        _tags.Add("Tag7");
-        _tags.Add("Tag8");
-        _tags.Add("Tag9");
-        _tags.Add("Tag10");
+        _tags = (await TestPreviewService.GetTagsList(15, 0, null)).Data;
     }
 
     private void ChangeTads()
